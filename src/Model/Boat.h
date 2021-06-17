@@ -54,7 +54,7 @@ public:
 
     virtual int getFuel() const	{ return curr_fuel; }
 
-    virtual void setFuel(int fuel) const { new_fuel = fuel; }
+    virtual void setFuel(int fuel) { new_fuel = fuel; }
 
     virtual void setStatus(Status new_status) {
         switch (new_status) {
