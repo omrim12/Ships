@@ -7,7 +7,7 @@
 class Boat;
 /**************************/
 class Port : public gameObj	{
-
+/**************************/
 private:
 	/*data members*/
 	int containers;

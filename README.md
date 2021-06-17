@@ -1,2 +1,0 @@
-# ships
-ships simulation
