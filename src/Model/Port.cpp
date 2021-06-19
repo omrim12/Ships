@@ -20,17 +20,27 @@ void Port::unload(int cont)	{  containers -= cont; }
 
 void Port::load(int cont)	{ containers += cont; }
 
-void Port::fuel(int cap)	{}
+void Port::fuel(int cap)	{
+
+	/*
+	 *
+	 *TODO: fuel the top of the queue (use add_fuel of the ship)
+	 *
+	 */
+
+
+
+}
 
 void Port::update()	{
 
 	containers = new_containers;
 	fuel_capacity = new_fuel_capacity;
-	int required_fuel = ready_to_fuel.front()->getFuel();
+	int required_fuel = ready_to_fuel.front()->getCurrFuel();
 
 	if( required_fuel <= fuel_capacity )	{
 		Boat * to_fuel = ready_to_fuel.front().release();
-		to_fuel->setFuel(required_fuel);
+		to_fuel->setCurrFuel(required_fuel);
 	}
 }
 

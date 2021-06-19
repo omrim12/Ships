@@ -13,8 +13,8 @@ enum Status {
 class Boat : public gameObj {
 protected:
 	/*data members*/
-	string name;
-	int curr_fuel;
+	const string name;
+	double curr_fuel;
 	Status status;
 	int curr_speed;
 	Direction direction;
@@ -23,16 +23,14 @@ protected:
 
     /*data members update*/
     int new_speed;
-    int new_fuel;
+    double add_fuel;
     Status new_status;
-    Location new_curr_Location;
     Location new_dest_Location;
     Direction new_Direction;
 
 public:
-    Boat() : name(""),curr_fuel(0), status(Stopped), curr_speed(0), direction(Direction()), curr_Location(Location()),
-			 dest_Location(Location()),  new_speed(0),
-			 new_fuel(curr_fuel),new_status(status),new_curr_Location(curr_Location),
+    Boat(double fuel) : name(""),curr_fuel(fuel), status(Stopped), curr_speed(0), direction(Direction()), curr_Location(Location()),
+			 dest_Location(Location()),  new_speed(0), add_fuel(0),new_status(status),
 			 new_dest_Location(dest_Location), new_Direction(Direction()){};
 
     virtual ~Boat() = 0;
@@ -48,35 +46,32 @@ public:
 
     virtual const string &getName() const { return name; }
 
-    virtual void setName(const string &name) { Boat::name = name; }
-
     virtual Status getStatus() const { return status; }
 
-    virtual int getFuel() const	{ return curr_fuel; }
+    virtual double getCurrFuel() const	{ return curr_fuel; }
 
-    virtual void setFuel(int fuel) { new_fuel = fuel; }
+    virtual void setCurrFuel(double fuel) { curr_fuel = fuel; }
 
-    virtual void setStatus(Status new_status) {
+    virtual void executeByStatus(Status new_status) {
+
         switch (new_status) {
             case Stopped:
-                curr_speed = 0;
-                dest_Location = curr_Location;
-                status = Stopped;
+                new_speed = 0;
                 stop();
                 break;
             case Docked:
-                status = Docked;
+            	new_speed = 0;
                 dock();
                 break;
             case Dead:
-                status = Dead;
+            	new_speed = 0;
                 dead();
                 break;
             case Move:
-                status = Move;
                 move();
                 break;
         }
+
     }
 
     virtual const Location &getCurrLocation() const { return curr_Location; }
@@ -98,7 +93,7 @@ public:
 
     virtual string toString() const = 0;
 
-    virtual void update() override;
+    virtual void update() = 0;
 };
 
 Boat::~Boat()	{}

@@ -14,7 +14,7 @@ private:
     int resistance;
     vector <unique_ptr<Port>> my_Ports;
 public:
-    patrolBoat(int res):Boat(),resistance(res),my_Ports(vector<unique_ptr<Port> >{})	{
+    patrolBoat(int res):Boat(MAX_PAT_FUEL),resistance(res),my_Ports(vector<unique_ptr<Port> >{})	{
     	curr_fuel = MAX_PAT_FUEL;
     	new_fuel = curr_fuel;
     }
