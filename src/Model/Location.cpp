@@ -30,6 +30,11 @@ Location &Location::operator=(Location &&other) {
 }
 
 /****************************************/
+bool Location::operator !=(const Location& other)	{
+	if( x != other.x || y != other.y )	{ return true; }
+	return false;
+}
+/****************************************/
 void Location::set_x(double new_x) { x = new_x; }
 
 /****************************************/

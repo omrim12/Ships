@@ -6,10 +6,13 @@ class cruiserBoat : public Boat	{
 
 private:
     const int MAX_SPEED = 75;
-    int attack_power;
-    int attack_range;
+    const int attack_power;
+    const int attack_range;
 
 public:
+    cruiserBoat();
+    ~cruiserBoat();
+
     void attack(Boat& attack_boat);
 };
 

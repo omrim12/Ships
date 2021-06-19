@@ -29,6 +29,7 @@ public:
 	/*operators*/
 	Location& operator=(const Location& other);
 	Location& operator=(Location&& other);
+	bool operator !=(const Location& other);
 
 	/*setters & getters*/
 	void set_x(double new_x);

@@ -33,7 +33,7 @@ public:
 			 dest_Location(Location()),  new_speed(0), add_fuel(0),new_status(status),
 			 new_dest_Location(dest_Location), new_Direction(Direction()){};
 
-    virtual ~Boat() = 0;
+    virtual ~Boat()	{};
 
     Boat(const Boat&) = delete;
     Boat(Boat&&) = delete;
@@ -95,7 +95,5 @@ public:
 
     virtual void update() = 0;
 };
-
-Boat::~Boat()	{}
 
 #endif

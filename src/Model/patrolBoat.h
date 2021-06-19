@@ -14,10 +14,7 @@ private:
     int resistance;
     vector <unique_ptr<Port>> my_Ports;
 public:
-    patrolBoat(int res):Boat(MAX_PAT_FUEL),resistance(res),my_Ports(vector<unique_ptr<Port> >{})	{
-    	curr_fuel = MAX_PAT_FUEL;
-    	new_fuel = curr_fuel;
-    }
+    patrolBoat(int res):Boat(MAX_PAT_FUEL),resistance(res),my_Ports(vector<unique_ptr<Port> >{})	{}
     void start_journey(const Port& start_Port);
     bool operator <(const cruiserBoat& other) const;
     string toString() const;
@@ -25,4 +22,4 @@ public:
 };
 
 
-#endif //EX3_SHIPS_SIMULATION_PATROLBOAT_H
+#endif
