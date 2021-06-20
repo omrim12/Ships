@@ -1,5 +1,5 @@
 #include <iostream>
-#include "model_main.cpp"
+//#include "model_main.cpp"
 #include "view_main.cpp"
 #include "controller_main.cpp"
 using namespace std;
@@ -19,7 +19,7 @@ using namespace std;
 /*************************/
 int main() {
 
-    model_main();
+    //model_main();
     view_main();
     controller_main();
 
