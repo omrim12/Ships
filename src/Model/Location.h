@@ -11,8 +11,6 @@
 using namespace std;
 /************************************/
 class Direction;
-class Boat;
-class Port;
 /************************************/
 class Location	{ // this class represents a point in a euclidean space.
 

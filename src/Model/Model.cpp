@@ -1,6 +1,6 @@
 #include "Model.h"
 /*************************************/
- static Model& Model::getInstance()	{
+Model& Model::getInstance()	{
 
 	 if( inst.get() ) { return *inst.get(); }
 

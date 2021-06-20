@@ -35,6 +35,10 @@ public:
     /*exceptions*/
 
 
+
+
+
+
     /*c'tors & d'tors*/
     Boat(double fuel) : MAX_BOAT_FUEL(fuel),name(""),curr_fuel(fuel), status(Stopped), curr_speed(0), direction(Direction()), curr_Location(Location()),
 			 dest_Location(Location()),  new_speed(0), add_fuel(0),new_status(status),
