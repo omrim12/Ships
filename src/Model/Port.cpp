@@ -1,49 +1,57 @@
 #include "Port.h"
 #include "patrolBoat.h"
 #include "freighterBoat.h"
-
-Port::Port():gameObj(),containers(0),loc(Location()),fuel_capacity(0),ready_to_fuel(queue<unique_ptr<Boat> >{}),
-			 	 new_containers(containers),new_fuel_capacity(fuel_capacity){}
-
+/********************************************/
+Port::Port(): gameObj(), loc(Location(50,5)), containers(0),port_name("Nagoya"),fuel_capacity(1000000),
+						 fuel_product_per_hr(1000),ready_to_fuel(queue<weak_ptr<Boat> >{}),
+						 new_containers(containers),new_fuel_capacity(fuel_capacity){} // for default port Nagoya.
+/********************************************/
+Port::Port(double fuel_capacity, double fuel_product, string& name, const Location& loc):
+				gameObj(),loc(Location()),containers(0),port_name(name),fuel_capacity(fuel_capacity),
+				fuel_product_per_hr(fuel_product),ready_to_fuel(queue<weak_ptr<Boat> >{}),new_containers(containers),
+				new_fuel_capacity(fuel_capacity){}
+/********************************************/
 Port::~Port()	{}
-
-Port::Port(const Location& loc):gameObj(),containers(0),loc(loc),fuel_capacity(0),ready_to_fuel(queue<unique_ptr<Boat> >{}),
-								new_containers(containers),new_fuel_capacity(fuel_capacity)	{}
-
+/********************************************/
 Location Port::get_Location() const	{ return loc; }
-
+/********************************************/
 double Port::get_fuel_cap() const	{ return fuel_capacity; }
-
+/********************************************/
 void Port::set_fuel_cap(double new_cap)	{ fuel_capacity = new_cap; }
-
+/********************************************/
 void Port::unload(int cont)	{  containers -= cont; }
-
+/********************************************/
 void Port::load(int cont)	{ containers += cont; }
+/********************************************/
+void Port::fuel()	{
 
-void Port::fuel(int cap)	{
+	double required_fuel = ready_to_fuel.front().lock()->getMaxFuel() - ready_to_fuel.front().lock()->getCurrFuel();
 
-	/*
-	 *
-	 *TODO: fuel the top of the queue (use add_fuel of the ship)
-	 *
-	 */
+	// check if fuel action is valid
+	if( required_fuel <= fuel_capacity )	{
 
+		ready_to_fuel.front().lock()->setCurrFuel(required_fuel);
+		new_fuel_capacity = fuel_capacity - required_fuel;
+		ready_to_fuel.pop();
 
-
+	}
 }
-
+/********************************************/
+void Port::addToQueue(weak_ptr<Boat> boat){ ready_to_fuel.push(boat); }
+/********************************************/
 void Port::update()	{
 
 	containers = new_containers;
 	fuel_capacity = new_fuel_capacity;
-	int required_fuel = ready_to_fuel.front()->getCurrFuel();
+	/*
+	 *
+	 * to update :
+	 *
+	 * 1. fuel
+	 * 3. product more fuel
+	 *
+	 */
 
-	if( required_fuel <= fuel_capacity )	{
-		Boat * to_fuel = ready_to_fuel.front().release();
-		to_fuel->setCurrFuel(required_fuel);
-	}
 }
-
-void Port::addToQueue(unique_ptr<Boat>& boat){ ready_to_fuel.push(std::move(boat)); }
-
+/********************************************/
 

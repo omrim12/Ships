@@ -1,5 +1,4 @@
-#include <iostream>
-#include "Boat.h"
+#include "Model.h"
 /******************************/
 //TODO: run tests for:
 //1.	direction calculations

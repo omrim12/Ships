@@ -1,18 +1,21 @@
 #ifndef EX3_BoatS_SIMULATION_Boat_H
 #define EX3_BoatS_SIMULATION_Boat_H
-#include "Direction.h"
 #include "gameObj.h"
 #include "Port.h"
-
 using namespace std;
-
+/*****************************************/
 enum Status {
     Stopped, Docked, Dead, Move
 };
-
+/*****************************************/
+class freighterBoat;
+class cruiserBoat;
+class patrolBoat;
+/*****************************************/
 class Boat : public gameObj {
 protected:
 	/*data members*/
+	const double MAX_BOAT_FUEL;
 	const string name;
 	double curr_fuel;
 	Status status;
@@ -29,7 +32,7 @@ protected:
     Direction new_Direction;
 
 public:
-    Boat(double fuel) : name(""),curr_fuel(fuel), status(Stopped), curr_speed(0), direction(Direction()), curr_Location(Location()),
+    Boat(double fuel) : MAX_BOAT_FUEL(fuel),name(""),curr_fuel(fuel), status(Stopped), curr_speed(0), direction(Direction()), curr_Location(Location()),
 			 dest_Location(Location()),  new_speed(0), add_fuel(0),new_status(status),
 			 new_dest_Location(dest_Location), new_Direction(Direction()){};
 
@@ -51,6 +54,8 @@ public:
     virtual double getCurrFuel() const	{ return curr_fuel; }
 
     virtual void setCurrFuel(double fuel) { curr_fuel = fuel; }
+
+    virtual double getMaxFuel() const	{ return MAX_BOAT_FUEL; }
 
     virtual void executeByStatus(Status new_status) {
 
@@ -95,5 +100,5 @@ public:
 
     virtual void update() = 0;
 };
-
+/*****************************************/
 #endif

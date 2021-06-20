@@ -30,6 +30,7 @@ public:
 	Location& operator=(const Location& other);
 	Location& operator=(Location&& other);
 	bool operator !=(const Location& other);
+	operator string() const;
 
 	/*setters & getters*/
 	void set_x(double new_x);

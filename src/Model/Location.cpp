@@ -47,6 +47,17 @@ int Location::get_x() const { return x; }
 int Location::get_y() const { return y; }
 
 /****************************************/
+Location::operator string() const	{
+	string output = "";
+	output += "(";
+	output += to_string(x);
+	output += ",";
+	output += to_string(y);
+	output += ")";
+
+	return output;
+}
+/****************************************/
 Location Location::next_Location(const Direction &direct, double velocity) const {
 
     Location new_loc;

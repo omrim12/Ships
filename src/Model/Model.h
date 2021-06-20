@@ -1,21 +1,13 @@
-//
-// Created by User on 19/06/2021.
-//
-
 #ifndef EX3_BOATS_SIMULATION_MODEL_H
 #define EX3_BOATS_SIMULATION_MODEL_H
-#include "Port.h"
-#include "Boat.h"
-#include <vector>
-
-
-
+#include "gameObj.h"
+/***********************************/
 class Model {
 private:
     static unique_ptr<Model> inst;
     vector<shared_ptr<Port>> all_ports;
-    vector<unique_ptr<Boat>> all_boats;
-    Model(): all_ports(vector<shared_ptr<Port>>()),all_boats(vector<unique_ptr<Boat>>()){};
+    vector<shared_ptr<Boat>> all_boats;
+    Model(): all_ports(vector<shared_ptr<Port>>()),all_boats(vector<shared_ptr<Boat>>()){};
 public:
     static Model& getInstance();
     Model (const Model&) = delete;
@@ -26,6 +18,5 @@ public:
     Port& findPortByLocation(const Location &loc);
 
 };
-
-
-#endif //EX3_BOATS_SIMULATION_MODEL_H
+/***********************************/
+#endif

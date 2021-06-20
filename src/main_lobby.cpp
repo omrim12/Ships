@@ -1,7 +1,6 @@
-#include <iostream>
-//#include "model_main.cpp"
-#include "view_main.cpp"
-#include "controller_main.cpp"
+#include "src/Model/model_main.h"
+#include "src/View/view_main.h"
+#include "src/Controller/controller_main.h"
 using namespace std;
 /*************************/
 //TODO: to be implemented/fixed:
@@ -19,7 +18,7 @@ using namespace std;
 /*************************/
 int main() {
 
-    //model_main();
+    model_main();
     view_main();
     controller_main();
 
