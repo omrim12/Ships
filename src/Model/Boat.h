@@ -32,31 +32,30 @@ protected:
     Direction new_Direction;
 
 public:
+    /*exceptions*/
+
+
+    /*c'tors & d'tors*/
     Boat(double fuel) : MAX_BOAT_FUEL(fuel),name(""),curr_fuel(fuel), status(Stopped), curr_speed(0), direction(Direction()), curr_Location(Location()),
 			 dest_Location(Location()),  new_speed(0), add_fuel(0),new_status(status),
 			 new_dest_Location(dest_Location), new_Direction(Direction()){};
-
     virtual ~Boat()	{};
-
-    Boat(const Boat&) = delete;
     Boat(Boat&&) = delete;
+    Boat(const Boat&) = delete;
+
+    /*operators*/
     Boat& operator=(const Boat&) = delete;
     Boat& operator=(Boat&&) = delete;
 
-    virtual int getCurrSpeed() const { return curr_speed; }
 
-    virtual void setCurrSpeed(int currSpeed) { curr_speed = currSpeed; }
-
-    virtual const string &getName() const { return name; }
-
+    /*class functions*/
     virtual Status getStatus() const { return status; }
-
+    virtual const string &getName() const { return name; }
+    virtual int getCurrSpeed() const { return curr_speed; }
     virtual double getCurrFuel() const	{ return curr_fuel; }
-
     virtual void setCurrFuel(double fuel) { curr_fuel = fuel; }
-
     virtual double getMaxFuel() const	{ return MAX_BOAT_FUEL; }
-
+    virtual void setCurrSpeed(int currSpeed) { curr_speed = currSpeed; }
     virtual void executeByStatus(Status new_status) {
 
         switch (new_status) {
@@ -78,26 +77,17 @@ public:
         }
 
     }
-
     virtual const Location &getCurrLocation() const { return curr_Location; }
-
     virtual void setCurrLocation(const Location &currLocation) { curr_Location = currLocation; }
-
     virtual const Location &getDestLocation() const { return dest_Location; }
-
     virtual void setDestLocation(const Location &destLocation) = 0;
-
     virtual const Direction &getDirection() const { return direction; }
-
     virtual void setDirection(const Direction &Direction) = 0;
-
     virtual void stop() = 0;
     virtual void dock() = 0;
     virtual void dead() = 0;
     virtual void move() = 0;
-
     virtual string toString() const = 0;
-
     virtual void update() = 0;
 };
 /*****************************************/

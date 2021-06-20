@@ -9,7 +9,7 @@ class Port;
 class gameObj	{
     bool update_ready;
 public:
-    gameObj():update_ready(false)	{}
+    gameObj();
     virtual ~gameObj()	{};
     virtual void update() = 0;
 };

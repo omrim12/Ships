@@ -22,7 +22,10 @@ Direction::Direction(const Location& loc1, const Location& loc2):vect(Location()
     vect.set_x(loc1.get_x() - loc2.get_x());
     vect.set_y(loc1.get_y() - loc2.get_y());
     degree = vector_to_degree(vect);
+
     normalize();
+
+
 }
 /****************************************/
 Direction& Direction::operator=(Direction&& other)	{
@@ -49,6 +52,7 @@ double Direction::vector_to_degree(const Location& loc)	{return atan(loc.get_y()
 /******************************************/
 void Direction::normalize()	{
 	double vect_size = sqrt(pow(vect.get_x(),2) + pow(vect.get_y(),2));
+	cout << "vector size is: " << to_string(vect_size) << endl;
 	if( vect_size <= 1 )	{ return; } // already normalized / no Direction
 	vect = Location(vect.get_x() / vect_size, vect.get_y() / vect_size );
 }

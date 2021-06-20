@@ -25,10 +25,8 @@ private:
     int new_to_unload;
 public:
     /*c'tors & d'tors*/
-    freighterBoat(int res, int cont_cap):Boat(MAX_FRI_FUEL), MAX_CONTAINERS_CAPACITY(cont_cap),resistance(res),load_status(0),
-										 num_of_containers(MAX_CONTAINERS_CAPACITY), to_unload(0), warning(0), new_load_status(load_status),
-										 new_num_of_containers(num_of_containers), new_to_unload(0) {};
-    ~freighterBoat()	{}
+    freighterBoat(int res, int cont_cap);
+    ~freighterBoat();
 
     /*getters & setters*/
     void setDirection();

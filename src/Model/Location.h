@@ -11,12 +11,14 @@
 using namespace std;
 /************************************/
 class Direction;
+class Boat;
+class Port;
 /************************************/
 class Location	{ // this class represents a point in a euclidean space.
 
 private:
-	int x;
-	int y;
+	double x;
+	double y;
 
 public:
 	/* c'tors & d'tors*/
@@ -30,6 +32,7 @@ public:
 	Location& operator=(const Location& other);
 	Location& operator=(Location&& other);
 	bool operator !=(const Location& other);
+	bool operator ==(const Location& other);
 	operator string() const;
 
 	/*setters & getters*/
