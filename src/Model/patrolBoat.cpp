@@ -18,7 +18,9 @@ public:
 
 };
 /********************************************/
-patrolBoat::patrolBoat(int res):Boat(MAX_PAT_FUEL),resistance(res),curr_port_name(""),dockedStatus(set_dest),
+patrolBoat::~patrolBoat()	{}
+/********************************************/
+patrolBoat::patrolBoat(int res):Boat(MAX_PAT_FUEL),next_dest_index(0),resistance(res),curr_port_name(""),dockedStatus(set_dest),
 								my_Ports(), new_patrols(queue<weak_ptr<Port> >{})	{
         ///*copy all ports vector to - my ports ****
     }
@@ -26,12 +28,10 @@ patrolBoat::patrolBoat(int res):Boat(MAX_PAT_FUEL),resistance(res),curr_port_nam
 void patrolBoat::start_patrol(const Port &start_Port) {
 
     std::sort(my_Ports.begin(), my_Ports.end(), cmp(start_Port));
-    curr_port_name = start_Port.getPortName();
+    //dest_Location = my_Ports[next_dest_index];
+    //direction = Location(curr_Location,dest_Location);
+    //curr_port_name = start_Port.getPortName();
 
-    /*
-     * 2. set first destination
-     * 3. define boat status
-     */
 }
 /********************************************/
 ostream &operator<<(ostream &out, const patrolBoat &ship) {
@@ -77,6 +77,8 @@ ostream &operator<<(ostream &out, const patrolBoat &ship) {
 
     return out;
 }
+/********************************************/
+void patrolBoat::setDestLocation(const Location& dest_loc)	{ dest_Location = dest_loc; }
 /********************************************/
 void patrolBoat::stop()	{
 

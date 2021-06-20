@@ -9,6 +9,7 @@ enum at_port_status {fuel,dock,set_dest};
 /********************************/
 class patrolBoat : public Boat	{
 private:
+	int next_dest_index;
     static const int MAX_PAT_FUEL = 900000;
     const int MAX_SPEED = 15;
     const int FUEL_PER_NM = 2000;
@@ -29,6 +30,7 @@ public:
     /*class functions*/
     void start_patrol(const Port& start_Port);
     bool operator <(const cruiserBoat& other) const;
+    void setDestLocation(const Location& dest_loc);
     void stop();
   	void dock();
     void dead();

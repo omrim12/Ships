@@ -1,8 +1,5 @@
 #ifndef Port_H_
 #define Port_H_
-#include <memory>
-#include <queue>
-#include "Boat.h"
 #include "GameObj.h"
 /**************************/
 class Boat;
@@ -38,7 +35,6 @@ public:
 	string getPortName() const;
 	double get_fuel_cap() const;
 	Location get_Location() const;
-	void set_fuel_cap(double new_cap);
 	void addToQueue(weak_ptr<Boat> boat);
 
 	/*class functions*/

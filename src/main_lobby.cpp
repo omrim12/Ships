@@ -1,6 +1,6 @@
-#include "src/Model/model_main.h"
-#include "src/View/view_main.h"
-#include "src/Controller/controller_main.h"
+#include "Model/model_main.h"
+#include "View/view_main.h"
+#include "Controller/controller_main.h"
 using namespace std;
 /*************************/
 //TODO: to be implemented/fixed:
