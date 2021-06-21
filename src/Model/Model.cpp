@@ -15,7 +15,7 @@ vector<shared_ptr<Port>>& Model::getAllBoats()	{ return all_boats; }
 /*************************************/
 int Model::findPortByLocation(const Location &loc)	{
 
-	for(int i = 0; i < all_ports.size(); ++i)	{
+	for(unsigned int i = 0; i < all_ports.size(); ++i)	{
 		if( all_ports[i].get()->get_Location() == loc )	{
 			return i;
 		}

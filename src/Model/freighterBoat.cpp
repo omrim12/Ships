@@ -44,10 +44,7 @@ void freighterBoat::setDestLocation(const Location &destLocation){
     new_dest_Location = destLocation;
 }
 /*************************************/
-void freighterBoat::setDirection()	{
-	new_Direction = Direction(dest_Location,curr_Location);
-	new_Direction.normalize();
-}
+void freighterBoat::setDirection()	{new_Direction = Direction(dest_Location,curr_Location);}
 /*************************************/
 void freighterBoat::setPort(std::shared_ptr<Port>& port, int speed, bool b, const Location& dest_loc){
     new_status = Move;
