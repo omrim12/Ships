@@ -1,7 +1,7 @@
 #ifndef Location_H_
 #define Location_H_
 #include <cmath>
-#include <queue>
+#include <deque>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -15,39 +15,39 @@ class Direction;
 class Location	{ // this class represents a point in a euclidean space.
 
 private:
-	double x;
-	double y;
+    double x;
+    double y;
 
 public:
-	/* c'tors & d'tors*/
-	Location();
-	Location(double x, double y);
-	Location(const Location& other);
-	Location(Location&& other);
-	~Location();
+    /* c'tors & d'tors*/
+    Location();
+    Location(double x, double y);
+    Location(const Location& other);
+    Location(Location&& other);
+    ~Location();
 
-	/*operators*/
-	Location& operator=(const Location& other);
-	Location& operator=(Location&& other);
-	bool operator !=(const Location& other);
-	bool operator ==(const Location& other);
-	operator string() const;
+    /*operators*/
+    Location& operator=(const Location& other);
+    Location& operator=(Location&& other);
+    bool operator !=(const Location& other);
+    bool operator ==(const Location& other);
+    operator string() const;
 
-	/*setters & getters*/
-	void set_x(double new_x);
-	void set_y(double new_y);
-	int get_x() const;
-	int get_y() const;
+    /*setters & getters*/
+    void set_x(double new_x);
+    void set_y(double new_y);
+    int get_x() const;
+    int get_y() const;
 
-	/*class functions*/
-	Location next_Location(const Direction& direct, double velocity) const;
-	double distance_from(const Location &loc);
+    /*class functions*/
+    Location next_Location(const Direction& direct, double velocity) const;
+    double distance_from(const Location &loc);
 
-	/*print operator*/
-	friend ostream& operator<<(ostream& out, const Location& loc)	{
-		out << "(" << loc.x << "," << loc.y << ")";
-		return out;
-	}
+    /*print operator*/
+    friend ostream& operator<<(ostream& out, const Location& loc)	{
+        out << "(" << loc.x << "," << loc.y << ")";
+        return out;
+    }
 };
 /***********************************/
 #endif

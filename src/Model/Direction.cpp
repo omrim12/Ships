@@ -13,9 +13,9 @@ Direction::Direction(const Direction& other):vect(other.vect),degree(other.degre
 Direction::Direction(Direction&& other):vect(other.vect),degree(other.degree)	{}
 /******************************************/
 Direction& Direction::operator=(const Direction& other)	{
-	vect = other.vect;
-	degree = other.degree;
-	return *this;
+    vect = other.vect;
+    degree = other.degree;
+    return *this;
 }
 /******************************************/
 Direction::Direction(const Location& loc1, const Location& loc2):vect(Location()),degree(0)	{
@@ -29,9 +29,9 @@ Direction::Direction(const Location& loc1, const Location& loc2):vect(Location()
 }
 /****************************************/
 Direction& Direction::operator=(Direction&& other)	{
-	vect = other.vect;
-	degree = other.degree;
-	return *this;
+    vect = other.vect;
+    degree = other.degree;
+    return *this;
 }
 /******************************************/
 Location Direction::get_vector() const	{ return vect; }
@@ -43,16 +43,16 @@ int Direction::get_degree() const	{ return degree; }
 void Direction::set_degree(double new_degree)	{ degree = new_degree; }
 /******************************************/
 Location Direction::degree_to_vector(const double deg)	{
-	return Location(sin(deg),cos(deg)); // derives from identity : y = sin(degree), x = cos(degree)
+    return Location(sin(deg),cos(deg)); // derives from identity : y = sin(degree), x = cos(degree)
 }
 /******************************************/
 double Direction::vector_to_degree(const Location& loc)	{return atan(loc.get_y()/loc.get_x());}
-														// derives from calculation: vector's degree = arctan(sin(degree) / cos(degree))
-														//											 = arctan(y/x)
+// derives from calculation: vector's degree = arctan(sin(degree) / cos(degree))
+//											 = arctan(y/x)
 /******************************************/
 void Direction::normalize()	{
-	double vect_size = sqrt(pow(vect.get_x(),2) + pow(vect.get_y(),2));
-	cout << "vector size is: " << to_string(vect_size) << endl;
-	if( vect_size <= 1 )	{ return; } // already normalized / no Direction
-	vect = Location(vect.get_x() / vect_size, vect.get_y() / vect_size );
+    double vect_size = sqrt(pow(vect.get_x(),2) + pow(vect.get_y(),2));
+    cout << "vector size is: " << to_string(vect_size) << endl;
+    if( vect_size <= 1 )	{ return; } // already normalized / no Direction
+    vect = Location(vect.get_x() / vect_size, vect.get_y() / vect_size );
 }

@@ -1,3 +1,5 @@
+#include "Boat.h"
+#include "Port.h"
 #include "Location.h"
 #include "Direction.h"
 /****************************************/
@@ -47,14 +49,14 @@ int Location::get_y() const { return y; }
 
 /****************************************/
 Location::operator string() const	{
-	string output = "";
-	output += "(";
-	output += to_string(x);
-	output += ",";
-	output += to_string(y);
-	output += ")";
+    string output = "";
+    output += "(";
+    output += to_string(x);
+    output += ",";
+    output += to_string(y);
+    output += ")";
 
-	return output;
+    return output;
 }
 /****************************************/
 Location Location::next_Location(const Direction &direct, double velocity) const {

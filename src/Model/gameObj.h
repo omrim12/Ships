@@ -1,3 +1,4 @@
+
 #ifndef GAMEOBJ_H_
 #define GAMEOBJ_H_
 #include "Location.h"
@@ -15,4 +16,3 @@ public:
 };
 /******************************/
 #endif
-

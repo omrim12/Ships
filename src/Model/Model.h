@@ -1,6 +1,7 @@
 #ifndef EX3_BOATS_SIMULATION_MODEL_H
 #define EX3_BOATS_SIMULATION_MODEL_H
 #include "gameObj.h"
+#include <vector>
 /***********************************/
 class Model {
 
@@ -24,8 +25,8 @@ public:
 
     /*class functions*/
     static Model& getInstance();
-  	int findPortByLocation(const Location &loc);
-  	vector<shared_ptr<Port>>& getAllPorts();
+    int findPortByLocation(const Location &loc);
+    vector<shared_ptr<Port>>& getAllPorts();
     vector<shared_ptr<Port>>& getAllBoats();
 
 };
