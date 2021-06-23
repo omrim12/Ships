@@ -4,7 +4,7 @@
 
 #include "cruiserBoat.h"
 
-void cruiserBoat::attackNextTick(shared_ptr<Boat>& boat){
+void cruiserBoat::attackNextTick(weak_ptr<Boat>& boat){
     to_attack=true;
     attack_boat = boat;
 }

@@ -9,20 +9,21 @@ private:
     static const int MAX_FRI_FUEL = 500000;
     const int MAX_SPEED = 40;
     const double FUEL_PER_NM = 1000;
-
     /*data members*/
     std::weak_ptr<Port> dest_port;
+
     bool load_status;
+    int to_unload;
     bool warning;
 
     /*data members update*/
     std::weak_ptr<Port> new_dest_port;
-    bool new_load_status;
 
+    bool new_load_status;
 
 public:
     /*c'tors & d'tors*/
-    freighterBoat(int cont_cap, int res);
+    freighterBoat(string& boat_name,int cont_cap, int res);
     ~freighterBoat()	{}
 
     /*getters & setters*/
@@ -30,9 +31,10 @@ public:
     void setToLoad(bool b);
     void setDestLocation(const Location &destLocation);
     void setPort(std::shared_ptr<Port>& port, int speed, bool b, const Location& dest_loc);
+    void setToUnload(int capacity);
 
     /*class functions*/
-    void unload(int cont);
+    void unload();
     void ask_fuel();
     void update();
     void stop();

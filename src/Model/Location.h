@@ -1,7 +1,7 @@
 #ifndef Location_H_
 #define Location_H_
 #include <cmath>
-#include <queue>
+#include <deque>
 #include <memory>
 #include <string>
 #include <sstream>

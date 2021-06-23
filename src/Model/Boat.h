@@ -4,16 +4,47 @@
 #include "Direction.h"
 #include "gameObj.h"
 #include "Port.h"
+#include <queue>
 
 using namespace std;
+
+enum order {
+    course, position, destination, load_at, unload_at, dick_at, attack, refuel, stop
+};
 
 enum Status {
     Stopped, Docked, Dead, Move
 };
+
+struct Order {
+    order ord;
+    int deg;
+    double speed;
+    int x;
+    int y;
+    string portName;
+    string boatName;
+    int num_of_containers;
+
+    Order(order arg_ord, int arg_deg = 0, double arg_speed = 0, const string &port = "", const string &boat = "",
+          int arg_x = 0, int arg_y = 0, int containers = 0) :
+            ord(arg_ord), deg(arg_deg), speed(arg_speed), portName(port), boatName(boat), x(arg_x), y(arg_y),
+            num_of_containers(containers){};
+
+};
+
+struct unload_Port{
+    Port port;
+    int capacity;
+};
+
 /*****************************************/
 class freighterBoat;
+
 class cruiserBoat;
+
 class patrolBoat;
+
 /*****************************************/
 
 class Boat : public gameObj {
@@ -25,26 +56,25 @@ protected:
     int resistance;
     double curr_fuel;
     Status status;
-    int curr_speed;
+    double curr_speed;
     Direction direction;
     Location curr_Location;
     Location dest_Location;
     int num_of_containers;
 
-    /*data members update*/
-    int new_speed;
-    double add_fuel;
-    Status new_status;
-    Location new_dest_Location;
-    Direction new_Direction;
-    int new_num_of_containers;
+    queue<Order> orders_queue;
+
+    vector<Port> ports_to_load;
+    vector<unload_Port> ports_to_unload;
+
 
 public:
-    Boat(double fuel, int res, int num) :MAX_BOAT_FUEL(fuel), resistance(res), name(""), curr_fuel(fuel), status(Stopped), curr_speed(0),
-                                          direction(Direction()), curr_Location(Location()),
-                                          dest_Location(Location()), new_speed(0), add_fuel(0), new_status(status),
-                                          new_dest_Location(dest_Location), new_Direction(Direction()),
-                                          new_num_of_containers(-1), num_of_containers(num) {};
+    Boat(string &boat_name, double fuel = 0, int res = 0, int num = 0) : name(boat_name), MAX_BOAT_FUEL(fuel),
+                                                                         resistance(res), curr_fuel(fuel),
+                                                                         status(Stopped), curr_speed(0),
+                                                                         direction(Direction()),
+                                                                         curr_Location(Location()),
+                                                                         dest_Location(Location()){};
 
     virtual ~Boat() {};
 
@@ -56,59 +86,28 @@ public:
 
     Boat &operator=(Boat &&) = delete;
 
-    virtual int getCurrSpeed() const { return curr_speed; }
 
-    virtual void setCurrSpeed(int currSpeed) { curr_speed = currSpeed; }
+
+
+    virtual int getSpeed() const { return curr_speed; }
 
     virtual const string &getBoatName() const { return name; }
 
     virtual Status getStatus() const { return status; }
+
     virtual const string &getName() const { return name; }
-    virtual double getMaxFuel() const	{ return MAX_BOAT_FUEL; }
+
+    virtual double getMaxFuel() const { return MAX_BOAT_FUEL; }
 
     virtual double getCurrFuel() const { return curr_fuel; }
 
     virtual int getResistance() { return resistance; }
 
-    virtual void setResistance(int res) { resistance = res;}
-
-    virtual void setCurrFuel(double fuel) { curr_fuel = fuel; }
-
-    virtual void setNumOfContainers(int numOfContainers) { new_num_of_containers = numOfContainers; }
+    virtual void setResistance(int res) { resistance = res; }
 
     virtual int getNumOfContainers() const { return num_of_containers; }
 
-    virtual Boat& operator++(){
-        resistance++;
-        return *this;
-    }
-
-    virtual Boat& operator--(){
-        resistance--;
-        return *this;
-    }
-
-    virtual void executeByStatus(Status new_status) {
-
-        switch (new_status) {
-            case Stopped:
-                new_speed = 0;
-                stop();
-                break;
-            case Docked:
-                new_speed = 0;
-                dock();
-                break;
-            case Dead:
-                new_speed = 0;
-                dead();
-                break;
-            case Move:
-                move();
-                break;
-        }
-
-    }
+//    virtual void executeByStatus(Status new_status) {
 
     virtual const Location &getCurrLocation() const { return curr_Location; }
 
@@ -116,11 +115,26 @@ public:
 
     virtual const Location &getDestLocation() const { return dest_Location; }
 
-    virtual void setDestLocation(const Location &destLocation) = 0;
+    virtual void setDestLocation(const Location &destLocation) { new_dest_Location = destLocation; }
 
     virtual const Direction &getDirection() const { return direction; }
 
-    virtual void setDirection(const Direction &Direction) = 0;
+    virtual void setDirection(const Direction &direction) { direction = direction; }
+
+    virtual void setCourse(const double &deg) { new_Direction = Direction(deg); }
+
+
+    virtual Boat &operator++() {
+        resistance++;
+        return *this;
+    }
+
+    virtual Boat &operator--() {
+        resistance--;
+        return *this;
+    }
+
+    virtual void ask_fuel() = 0;
 
     virtual void stop() = 0;
 
