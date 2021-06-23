@@ -1,9 +1,10 @@
 #include "freighterBoat.h"
 
-freighterBoat::freighterBoat(string& boat_name,int cont_cap, int res):Boat(boat_name,MAX_FRI_FUEL, res, cont_cap),MAX_CONTAINERS_CAPACITY(cont_cap),load_status(0),
-                                     warning(0), new_load_status(load_status),to_unload(0) {};
+freighterBoat(int cont_cap, int res):Boat(MAX_FRI_FUEL, res, cont_cap),MAX_CONTAINERS_CAPACITY(cont_cap),load_status(0),
+                                     warning(0), new_load_status(load_status) {};
+///unload status ???
+///about the num of containers
 
-/*************************************/
 void freighterBoat::stop()	{
     dest_port.reset();
 	new_dest_Location = curr_Location;
@@ -11,12 +12,9 @@ void freighterBoat::stop()	{
 
 /*************************************/
 void freighterBoat::dock()	{
+    ask_fuel();
+    curr_fuel += add_fuel;
     load_status ? load() : unload(to_unload);
-
-    if(!waiting_for_fuel && (curr_fuel!=MAX_FRI_FUEL)){
-        ask_fuel();
-        waiting_for_fuel=true;
-    }
 }
 /*************************************/
 
@@ -31,6 +29,7 @@ void freighterBoat::move()	{
 
 	if(curr_fuel - use_fuel <= 0)	{
 		if(curr_Location != dest_Location)	{
+			new_speed = 0;
 			new_status = Dead;
 		}
 	}
@@ -58,29 +57,26 @@ void freighterBoat::setPort(std::shared_ptr<Port>& port, int speed, bool b, cons
     setToLoad(b);
     setDirection();
     this->new_dest_port = port;
+    ///suposed to be new ???
 
 }
 /*************************************/
 
 void freighterBoat::setToLoad(bool b)	{new_load_status = b;}
 /*************************************/
-void freighterBoat::setToUnload(int capacity) { to_unload=capacity;}
-/*************************************/
-void freighterBoat::unload( ){
+void freighterBoat::unload(	int containers ){
 
-    if(new_num_of_containers < to_unload)	{
+    if(new_num_of_containers < containers)	{
 
         dest_port.lock()->load(new_num_of_containers);
         new_num_of_containers = 0;
-        to_unload=0;
         warning = 1;
 
         return;
     }
 
-    dest_port.lock()->load(to_unload);
-    new_num_of_containers -= to_unload;
-    to_unload=0;
+    dest_port.lock()->load(containers);
+    new_num_of_containers -= containers;
 }
 /*************************************/
 
@@ -101,21 +97,11 @@ void freighterBoat::ask_fuel()	{
 
 void freighterBoat::update()	{
 
-    if(waiting_for_fuel && new_status==Move ){
-        waiting_for_fuel = false;
-        dest_port.lock()->removeFromQueue(weak_ptr<Boat>(this));
-    }
-
 	executeByStatus(status);
 
 	if( warning )	{ cerr << "WARNING: requested containers to unload capacity is greater than existing capacity." << endl; }
 
 	warning = false;
-	if(add_fuel > 0){
-        curr_fuel += add_fuel;
-        add_fuel=0;
-        waiting_for_fuel=false;
-	}
 	status = new_status;
 	curr_speed = new_speed;
     dest_port = new_dest_port;

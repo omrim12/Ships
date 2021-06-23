@@ -10,18 +10,17 @@ Model& Model::getInstance()	{
 }
 /*************************************/
 vector<shared_ptr<Port>>& Model::getAllPorts()	{ return all_ports;	}
-///*************************************/
-//vector<shared_ptr<Port>>& Model::getAllBoats()	{ return all_boats; }
-///*************************************/
-//int Model::findPortByLocation(const Location &loc)	{
-//
-//    for(int i = 0; i < all_ports.size(); ++i)	{
-//        if( all_ports[i].get()->get_Location() == loc )	{
-//            all_ports[i].get()
-//            return i;
-//        }
-//    }
-//
-//    return -1;
-//}
+/*************************************/
+vector<shared_ptr<Port>>& Model::getAllBoats()	{ return all_boats; }
+/*************************************/
+int Model::findPortByLocation(const Location &loc)	{
+
+    for(int i = 0; i < all_ports.size(); ++i)	{
+        if( all_ports[i].get()->get_Location() == loc )	{
+            return i;
+        }
+    }
+
+    return -1;
+}
 /*************************************/

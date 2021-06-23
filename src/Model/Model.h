@@ -1,7 +1,6 @@
 #ifndef EX3_BOATS_SIMULATION_MODEL_H
 #define EX3_BOATS_SIMULATION_MODEL_H
 #include "gameObj.h"
-#include <vector>
 /***********************************/
 class Model {
 

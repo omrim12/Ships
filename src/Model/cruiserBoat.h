@@ -15,7 +15,7 @@ private:
     weak_ptr<Boat> attack_boat;
 
 public:
-    cruiserBoat(string& boat_name): Boat(boat_name), to_attack(false){};
+    cruiserBoat(): to_attack(false){};
     ~cruiserBoat();
     void attackNextTick(shared_ptr<Boat>& boat);
     void attack_now();
