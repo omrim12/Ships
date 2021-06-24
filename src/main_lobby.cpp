@@ -8,9 +8,9 @@ using namespace std;
 //TODO: to be implemented/fixed:
 
 // -----MODEL-----
-//1.	Boat and GameObj destructor defined outside of class. check why doesnt work
-//2.	remember: ports update is **after** boats update!
-//3.	add exceptions to freigther
+//1.	fix Boat class deduction via Controller/terminal.cpp .
+//2.	check
+//3.	add exceptions to Boat, freigther, patrol, cruiser and port.
 
 // -----VIEW-----
 
@@ -18,11 +18,17 @@ using namespace std;
 // -----CONTROLLER-----
 
 /*************************/
-int main() {
+int main(int argc, char **argv) {
 
-    model_main();
-    view_main();
-    controller_main();
+	if( argc < 2 )	{
+		cerr << "ERROR: no input file was given.";
+		exit(1);
+	}
+
+	controller_main(argc,argv);
+    //model_main();
+    //view_main();
+
 
     return 0;
 }

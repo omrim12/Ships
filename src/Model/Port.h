@@ -1,6 +1,13 @@
 #ifndef Port_H_
 #define Port_H_
-#include "GameObj.h"
+
+#include <deque>
+#include <memory>
+#include <string>
+
+#include "Boat.h"
+#include "Location.h"
+
 /**************************/
 class Boat;
 class patrolBoat;

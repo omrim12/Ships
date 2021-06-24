@@ -1,7 +1,11 @@
 #ifndef EX3_BOATS_SIMULATION_CRUISERBOAT_H
 #define EX3_BOATS_SIMULATION_CRUISERBOAT_H
+
+#include <iostream>
+#include <memory>
+#include <string>
+
 #include "Boat.h"
-#include<boost/pointer_cast.hpp>
 
 class freighterBoat;
 

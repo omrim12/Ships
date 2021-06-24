@@ -46,6 +46,4 @@ public:
     /*print operator*/
     friend ostream& operator<<(ostream& out, const freighterBoat& ship);
 };
-
-
 #endif

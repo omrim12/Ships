@@ -6,16 +6,15 @@
 class Model {
 
 protected:
-    static unique_ptr<Model> inst;
+    static shared_ptr<Model> inst;
     vector<shared_ptr<Port>> all_ports;
     vector<shared_ptr<Boat>> all_boats;
     Model(): all_ports(vector<shared_ptr<Port>>()),all_boats(vector<shared_ptr<Boat>>()){}; // user creation is forbidden.
 
 public:
     /*exceptions*/
-
-
     /*c'tors & d'tors*/
+    ~Model();
     Model (const Model&) = delete;
     Model(const Model&&) = delete;
 
@@ -24,19 +23,19 @@ public:
     Model& operator= (const Model&&) = delete;
 
     /*class functions*/
-    static Model& getInstance();
+    static shared_ptr<Model>& getInstance();
     bool isBoatExist(const string& boat_name );
     bool isPortExist(const string& port_name );
     weak_ptr<Boat> getBoat(const string& boat_name);
-    weak_ptr<Boat> getPort(const string& portt_name);
+    weak_ptr<Port> getPort(const string& port_name);
 
     int findPortByLocation(const Location &loc);
     vector<shared_ptr<Port>>& getAllPorts();
-    vector<shared_ptr<Port>>& getAllBoats();
+    vector<shared_ptr<Boat>>& getAllBoats();
 
-    void status();
     void go();
-    void create(const string& boat_name, const string& boat_type, int x, int y, int res_atckPower, int cap_range=0 );
+    void status();
+    void create(const string& boat_name, const string& boat_type, int x, int y, int res_atckPower, int cap_range = 0 );
 
 };
 /***********************************/

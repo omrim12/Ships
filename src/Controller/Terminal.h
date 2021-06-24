@@ -1,15 +1,22 @@
-#include <iostream>
-#include "C:\Users\ex3_ships_simulation\ships_simulation-main\src\Model\Model.h"
-#include "C:\Users\ex3_ships_simulation\ships_simulation-main\src\View\View.h"
-
-using namespace std;
-
-class Terminal {
+#include "../View/View.h"
+/*****************************/
+class Controller;
+/*****************************/
+class Terminal	 {
     static int Time;
     View view;
 public:
-    Terminal() {Time=0;}
+    /*exceptions*/
+    class InvalidInputException : public exception	{
+        public:
+        	virtual const char *what() const noexcept	{return "ERROR: invalid input inserted.";}
+    };
+
+    /*c'tors & d'tors*/
+    Terminal() {Time = 0;}
+    ~Terminal()	{}
+
+    /*class functions*/
     void run();
-
 };
-
+/*****************************/

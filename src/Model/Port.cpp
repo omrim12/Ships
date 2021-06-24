@@ -16,7 +16,7 @@ Port::Port(const Port& other):gameObj(),loc(other.loc), containers(other.contain
 /********************************************/
 Port::Port(double fuel_capacity, double fuel_product, string& name, const Location& loc):
         gameObj(),loc(Location()),containers(0),port_name(name),fuel_capacity(fuel_capacity),
-        fuel_product_per_hr(fuel_product),ready_to_fuel(queue<weak_ptr<Boat> >{}),new_containers(containers),
+        fuel_product_per_hr(fuel_product),ready_to_fuel(deque<weak_ptr<Boat> >{}),new_containers(containers),
         new_fuel_capacity(fuel_capacity){}
 /********************************************/
 Port::~Port()	{}

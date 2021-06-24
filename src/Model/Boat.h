@@ -86,9 +86,6 @@ public:
 
     Boat &operator=(Boat &&) = delete;
 
-
-
-
     virtual int getSpeed() const { return curr_speed; }
 
     virtual const string &getBoatName() const { return name; }
@@ -115,14 +112,13 @@ public:
 
     virtual const Location &getDestLocation() const { return dest_Location; }
 
-    virtual void setDestLocation(const Location &destLocation) { new_dest_Location = destLocation; }
+    virtual void setDestLocation(const Location &destLocation) { /*new_dest_Location = destLocation; */}
 
     virtual const Direction &getDirection() const { return direction; }
 
-    virtual void setDirection(const Direction &direction) { direction = direction; }
+    virtual void setDirection(const Direction &direction) { /* direction = direction; */}
 
-    virtual void setCourse(const double &deg) { new_Direction = Direction(deg); }
-
+    virtual void setCourse(const double &deg) { /* new_Direction = Direction(deg); */}
 
     virtual Boat &operator++() {
         resistance++;
