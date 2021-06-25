@@ -1,6 +1,6 @@
 #include "Terminal.h"
 #include "Controller.h"
-#include "Boat.h"
+#include "C:\Users\ex3_ships_simulation\ships_simulation-main\src\Model\Boat.h"
 /*********************************************/
 void Terminal::run()	{
 
@@ -61,14 +61,14 @@ void Terminal::run()	{
             }
             if( second_word == "course" )	{
                 s >> deg >> speed;
-                b.lock()->setCourse(deg);      ///add order to queue
+                b.lock()->addOrder(second_word,deg);      //add order to queue
+
             }
             else if( second_word == "position" )	{
 
                 s >> x >> y >> speed;
                 ///add order to queue
-                b.lock()->setDestLocation(Location(x,y));
-                b.lock()->setSpeed(speed); //TODO: Boat interface does not exist !!
+                b.lock()->addOrder(second_word,speed,x,y);
             }
             else if( second_word == "destination" )	{
                 string dest_port_name;
@@ -99,8 +99,7 @@ void Terminal::run()	{
                     break;
                 }
 
-                ///add order to queue, check if destination is load/un_load
-                b.lock()->setDestLocation(Model::getInstance()->getPort(dest_port_name).lock().get()->get_Location());
+                b.lock()->addOrder(second_word,0,0,0,0,Model::getInstance()->getPort(dest_port_name));
             }
             else if(second_word == "load_at")	{
                 string port_name;
@@ -115,8 +114,8 @@ void Terminal::run()	{
                     break;
                 }
 
-                ///add port to vector
-                b.lock()->setDestLocation(Model::getInstance()->getPort(dest_port_name).lock()->get_Location());
+                //add port to load destination list
+                b.lock()->add_load_dest(Model::getInstance()->getPort(port_name));
 
             }
             else if(second_word == "unload_at"){
@@ -151,8 +150,8 @@ void Terminal::run()	{
                     break;
                 }
 
-                ///add port to vector
-                b.lock()->setDestLocation(Model::getInstance()->getPort(dest_port_name).lock()->get_Location());
+                //add port to unload destination list
+                b.lock()->add_unload_dest(Model::getInstance()->getPort(port_name),containers);
 
             }
             else if( second_word == "dock_at" )	{
@@ -179,8 +178,8 @@ void Terminal::run()	{
                     cerr << "Port does not exist. try again. "<<endl;
                     break;
                 }
-                ///add order to queue
-                b.lock()->setDock(Model::getInstance()->getPort(dest_port_name)); // TODO: Boat interface does not exist !!
+                //add order to queue
+                b.lock()->addOrder(second_word,0,0,0,0,Model::getInstance()->getPort(dock_port));
             }
             else if(second_word == "attack"){
                 string attack_port;
@@ -195,13 +194,16 @@ void Terminal::run()	{
                     cerr << "Boat does not exist. try again. "<<endl;
                     break;
                 }
-                ///add order to queue
+                //add order to queue
+                b.lock()->addOrder(second_word,0,0,0,0,Model::getInstance()->getPort(attack_port));
+
             }
             else if( second_word == "refuel" )	{
-                ///add order to queue
+                b.lock()->setAskForFuel(true);
             }
             else if(second_word == "stop")	{
-                ///add order to queue
+                //add order to queue
+                b.lock()->addOrder(second_word);
             }
 
             else	{

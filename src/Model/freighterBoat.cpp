@@ -1,166 +1,191 @@
 #include "freighterBoat.h"
 
-freighterBoat::freighterBoat(string& boat_name,int cont_cap, int res):Boat(boat_name,MAX_FRI_FUEL, res, cont_cap),MAX_CONTAINERS_CAPACITY(cont_cap),load_status(0),
-                                     warning(0), new_load_status(load_status),to_unload(0) {};
+freighterBoat::freighterBoat(string &boat_name, int cont_cap, int res) : Boat(boat_name, MAX_FRI_FUEL, res, cont_cap),
+                                                                         MAX_CONTAINERS_CAPACITY(cont_cap) {};
 
 /*************************************/
-void freighterBoat::stop()	{
+void freighterBoat::course(int deg, double speed) {
+    status = Move_to_Course;
+    direction = direction(deg);
+    curr_speed = speed;
     dest_port.reset();
-	new_dest_Location = curr_Location;
+    type = None;
 }
 
 /*************************************/
-void freighterBoat::dock()	{
-    load_status ? load() : unload(to_unload);
-
-    if(!waiting_for_fuel && (curr_fuel!=MAX_FRI_FUEL)){
-        ask_fuel();
-        waiting_for_fuel=true;
-    }
+void freighterBoat::position(double x, double y, double speed) {
+    status = Move_to_Position;
+    direction = Direction(Location(x, y));
+    curr_speed = speed;
+    dest_port.reset();
+    type = None;
 }
+
 /*************************************/
-
-void freighterBoat::dead()	{}
-/*************************************/
-void freighterBoat::move()	{
-
-	if(curr_Location.distance_from(dest_Location) <= 0.1)	{
-	    new_status = Docked;
-
-	}
-
-	Location next_Location = (new_status == Docked ? dest_Location : curr_Location.next_Location(direction, curr_speed));
-	double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
-
-	if(curr_fuel - use_fuel <= 0)	{
-		if(curr_Location != dest_Location)	{
-			new_status = Dead;
-		}
-	}
-
-	else	{
-		curr_fuel -= use_fuel;
-		curr_Location = next_Location;
-	}
-
+void freighterBoat::destination(weak_ptr<Port> port, double speed) {
+    if (dest_is_load(port)) type = load;
+    else if (dest_is_unload(port)) type = unload;
+    else type = None;
+    status = Move_to_Dest;
+    direction = Direction(port.lock()->get_Location());
+    dest_port = std::move(port);
+    curr_speed = speed;
 }
+
 /*************************************/
-void freighterBoat::setDestLocation(const Location &destLocation){
-    new_dest_Location = destLocation;
+void freighterBoat::dock(weak_ptr<Port> port) {
+    if (curr_Location.distance_from(port.lock()->get_Location()) <= 0.1) {
+        curr_speed = 0;
+        curr_Location = port.lock()->get_Location();
+        if (status == Move_to_Dest) {
+            if (*port.lock().get() == *dest_port.lock().get()) {    ///???operator==
+                //case of docking port is same as destination port:
+                //*check if destination is from load/unload type
+                switch (type) {
+                    case (load):
+                        load_boat();
+                        break;
+                    case (unload):
+                        unload_boat();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        status = Docked;
+        type = None;
+
+    } else cerr << "WARNING" << port.lock()->getPortName() << " is too far for Docking. " << endl;
 }
+
 /*************************************/
-void freighterBoat::setDirection()	{
-	new_Direction = Direction(dest_Location,curr_Location);
-	new_Direction.normalize();
-}
-/*************************************/
-void freighterBoat::setPort(std::shared_ptr<Port>& port, int speed, bool b, const Location& dest_loc){
-    new_status = Move;
-    new_speed = speed;
-    setDestLocation(dest_loc);
-    setToLoad(b);
-    setDirection();
-    this->new_dest_port = port;
-
-}
-/*************************************/
-
-void freighterBoat::setToLoad(bool b)	{new_load_status = b;}
-/*************************************/
-void freighterBoat::setToUnload(int capacity) { to_unload=capacity;}
-/*************************************/
-void freighterBoat::unload( ){
-
-    if(new_num_of_containers < to_unload)	{
-
-        dest_port.lock()->load(new_num_of_containers);
-        new_num_of_containers = 0;
-        to_unload=0;
-        warning = 1;
-
-        return;
-    }
-
-    dest_port.lock()->load(to_unload);
-    new_num_of_containers -= to_unload;
-    to_unload=0;
-}
-/*************************************/
-
-void freighterBoat::load() {
-    dest_port.lock()->unload(MAX_CONTAINERS_CAPACITY-new_num_of_containers);
-    new_num_of_containers = MAX_CONTAINERS_CAPACITY;
-
-}
-/*************************************/
-void freighterBoat::ask_fuel()	{
-
+void freighterBoat::refuel() {
     std::shared_ptr<Boat> me(this);
     dest_port.lock()->addToQueue(weak_ptr<Boat>(me));
+    waiting_in_fuel_queue = true;
+    ask_fuel = false;
     return;
-
 }
+
 /*************************************/
+void freighterBoat::stop() {
+    status = Stopped;
+    curr_speed = 0;
+    dest_port.reset();
+    available = true; //available for other orders
+}
 
-void freighterBoat::update()	{
-
-    if(waiting_for_fuel && new_status==Move ){
-        waiting_for_fuel = false;
-        dest_port.lock()->removeFromQueue(weak_ptr<Boat>(this));
+/*************************************/
+void freighterBoat::unload_boat() {
+    int to_unload;
+    for (auto &p: ports_to_unload) {
+        if (*p.port.lock().get() == *dest_port.lock().get()) {   ///???operator ==
+            to_unload = p.capacity;
+            break;
+        }
     }
 
-	executeByStatus(status);
-
-	if( warning )	{ cerr << "WARNING: requested containers to unload capacity is greater than existing capacity." << endl; }
-
-	warning = false;
-	if(add_fuel > 0){
-        curr_fuel += add_fuel;
-        add_fuel=0;
-        waiting_for_fuel=false;
-	}
-	status = new_status;
-	curr_speed = new_speed;
-    dest_port = new_dest_port;
-	direction = new_Direction;
-	load_status = new_load_status;
-	dest_Location = new_dest_Location;
-	num_of_containers = new_num_of_containers;
+    if (curr_num_of_containers < to_unload) {
+        dest_port.lock()->load_port(curr_num_of_containers);
+        curr_num_of_containers = 0;
+        type = None;
+        cerr << "WARNING: containers capacity at " << name << " boat is smaller then required to unload. " << endl;
+        return;
+    }
+    //else
+    dest_port.lock()->load_port(to_unload);
+    curr_num_of_containers -= to_unload;
+    ports_to_unload.remove(ports_to_unload.begin(), ports_to_unload.end(), dest_port);
+    type = None;
 }
+
 /*************************************/
-ostream& operator<<(ostream& out, const freighterBoat& ship)	{
 
-	string stat_string = "";
+void freighterBoat::load_boat() {
+    dest_port.lock()->unload_port(MAX_CONTAINERS_CAPACITY - curr_num_of_containers);
+    curr_num_of_containers = MAX_CONTAINERS_CAPACITY;
+    //delete port from load ports list
+    ports_to_load.remove(ports_to_load.begin(), ports_to_load.end(), dest_port);
+}
 
-	switch(ship.status)	{
-		case(Move):
-			stat_string += "Moving to " + ship.destPortName + " on course " + to_string(ship.direction.get_degree())  + " deg";
-			break;
+/*************************************/
 
-		case(Docked):
-			stat_string += "Docked at " + ship.destPortName;
-			break;
+void freighterBoat::in_dock_status() {
+    if (ask_fuel) {
+        refuel();
+    }
+}
 
-		case(Dead):
-			stat_string += "Dead in the water";
-			break;
+/*************************************/
+void freighterBoat::in_move_status() {
+    Location next_Location = curr_Location.next_Location(direction, curr_speed));
+    double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
 
-		case(Stopped):
-			stat_string += "Stopped";
-			break;
+    if (curr_fuel - use_fuel <= 0) {
+        if (curr_Location != dest_Location) {
+            status = Dead;
+        }
+    } else {
+        curr_fuel -= use_fuel;
+        curr_Location = next_Location;
+    }
+}
 
-		default:
-			cerr << "WTFFFFF" << endl;
-			break;
-	}
+/*************************************/
+ostream &operator<<(ostream &out, const freighterBoat &ship) {
 
-	stat_string += ", ";
+    string stat_string = "";
 
-	out << "Freighter " << ship.name << " at " << ship.curr_Location << ", fuel: " << ship.curr_fuel << ", resistance: " <<
-			ship.resistance << ", " << stat_string << "speed " << ship.curr_speed << " nm/hr, Containers: " << ship.num_of_containers <<
-			", moving to " << (ship.load_status ? "loading" : "unloading") << " destination" << endl;
+    switch (ship.status) {
+        case (Move_to_Dest):
+            stat_string +=
+                    "Moving to " + ship.dest_port.lock()->getPortName() + " on course " + ship.direction.get_degree() +
+                    " deg" + ", speed " + ship.curr_speed + " nm/hr " + " Containers: " + ship.curr_num_of_containers;
+            switch (type) {
+                case (load):
+                    stat_string += "moving to loading destination. ";
+                    break;
+                case (unload):
+                    stat_string += "moving to unloading destination. ";
+                    break;
+                case (None):
+                    stat_string += "no cargo destinations. ";
+                    break;
+            }
+            break;
+        case (Move_to_Position):
+            stat_string += "Moving to position " + ship.dest_Location + ", speed " + ship.curr_speed + " nm/hr " +
+                           " Containers: " + ship.curr_num_of_containers;
+            break;
+        case (Move_to_Course):
+            stat_string +=
+                    "Moving on course " + ship.direction.get_degree() + ", speed " + ship.curr_speed + " nm/hr " +
+                    " Containers: " + ship.curr_num_of_containers;
+            break;
+        case (Docked):
+            stat_string += "Docked at " + ship.destPortName;
+            break;
 
-	return out;
+        case (Dead):
+            stat_string += "Dead in the water";
+            break;
+
+        case (Stopped):
+            stat_string += "Stopped";
+            break;
+
+        default:
+            cerr << "WTFFFFF" << endl;
+            break;
+    }
+
+    stat_string += ", ";
+
+    out << "Freighter " << ship.name << " at " << ship.curr_Location << ", fuel: " << ship.curr_fuel << ", resistance: "
+        << ship.resistance << ", " << stat_string;
+
+    return out;
 }
 
 /*************************************/
