@@ -1,21 +1,12 @@
 #include "freighterBoat.h"
 
-#include <algorithm>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-
-#include "Location.h"
-#include "Port.h"
-
 freighterBoat::freighterBoat(string &boat_name, int cont_cap, int res) : Boat(boat_name, MAX_FRI_FUEL, res, cont_cap),
                                                                          MAX_CONTAINERS_CAPACITY(cont_cap) {};
 
 /*************************************/
 void freighterBoat::course(int deg, double speed) {
     status = Move_to_Course;
-    direction = Direction(deg);
+    direction = direction(deg);
     curr_speed = speed;
     dest_port.reset();
     type = None;
@@ -82,7 +73,7 @@ void freighterBoat::stop() {
     status = Stopped;
     curr_speed = 0;
     dest_port.reset();
-    available = true; //available for other orders
+    setAvailable(true); //available for other orders
 }
 
 /*************************************/
@@ -128,12 +119,20 @@ void freighterBoat::in_dock_status() {
 
 /*************************************/
 void freighterBoat::in_move_status() {
-    Location next_Location = curr_Location.next_Location(direction, curr_speed);
+    if (curr_Location.distance_from(dest_Location) <= 0.1){
+        //case of boat already can dock at destination
+        status=Docked;
+        curr_speed=0;
+        curr_Location=dest_Location;
+        return;
+    }
+    Location next_Location = curr_Location.next_Location(direction, curr_speed));
     double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
 
-    if (curr_fuel - use_fuel <= 0) {
+    if (curr_fuel - use_fuel < 0) {
         if (curr_Location != dest_Location) {
             status = Dead;
+            curr_speed=0;
         }
     } else {
         curr_fuel -= use_fuel;
@@ -151,7 +150,7 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
             stat_string +=
                     "Moving to " + ship.dest_port.lock()->getPortName() + " on course " + ship.direction.get_degree() +
                     " deg" + ", speed " + ship.curr_speed + " nm/hr " + " Containers: " + ship.curr_num_of_containers;
-            switch (ship.type) {
+            switch (type) {
                 case (load):
                     stat_string += "moving to loading destination. ";
                     break;
@@ -191,8 +190,8 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
 
     stat_string += ", ";
 
-    out << "Freighter " << ship.name << " at " << ship.curr_Location << ", fuel: " << ship.curr_fuel << ", resistance: "
-        << ship.resistance << ", " << stat_string;
+    out << "Freighter " << ship.name << " at " << ship.curr_Location << ", fuel: " << ship.curr_fuel << ", res_pow: "
+        << ship.res_pow << ", " << stat_string;
 
     return out;
 }

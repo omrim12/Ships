@@ -13,17 +13,19 @@ class cruiserBoat : public Boat	{
 
 private:
     const int MAX_SPEED = 75;
-    const int attack_power;
     const int attack_range;
-    bool to_attack;
-    weak_ptr<Boat> attack_boat;
+//    bool to_attack;
+//    weak_ptr<Boat> attack_boat;
 
 public:
-    cruiserBoat(string& boat_name): Boat(boat_name), to_attack(false){};
+    //not implemented:
+    //destination, dock at, stop
+    cruiserBoat(string &boat_name, int pow, int range): Boat(boat_name,0,pow), attack_range(range){};
     ~cruiserBoat();
-    void attackNextTick(weak_ptr<Boat>& boat);
-    void attack_now();
-    void update();
+    void course(int deg, double speed);
+    void position(double x, double y, double speed);
+    void attack(weak_ptr<Boat> boat);
+    void in_move_status();
 
     friend ostream& operator<<(ostream& out, const cruiserBoat& ship);
 };

@@ -16,39 +16,43 @@ enum at_port_status {
 class patrolBoat : public Boat {
 private:
     int cursor;
+    int patrol_speed;
     static const int MAX_PAT_FUEL = 900000;
     const int MAX_SPEED = 15;
     const int FUEL_PER_NM = 2000;
     at_port_status dockedStatus;
-    vector<weak_ptr<Port>> my_dest_ports;
-    queue <pair<double, weak_ptr<Port>>> new_patrols;       // <speed, start port>
+    vector<weak_ptr<Port>> curr_patrol;
 
 public:
     /*c'tors & d'tors*/
     ~patrolBoat();
 
-    patrolBoat(string& boat_name,int res);
+    patrolBoat(string &boat_name, int res);
+
+//    not implemented functions:
+/**********************************/
+//    void course(int deg, double speed);
+//    void position(double x, double y, double speed);
+//    void dock();
+/**********************************/
+
+    void destination(weak_ptr<Port> port, double speed);
+
+    void start_patrol(weak_ptr<Port> port, double speed);
+
+    void stop();
+
+    void refuel();
+
+    void in_move_status();
+
+    void in_dock_status();
+
+    void patrol_move_to_first();
 
     /*operators*/
     friend ostream &operator<<(ostream &out, const patrolBoat &ship);
 
-    /*class functions*/
-    void start_patrol(const Port &start_Port, double speed);
-
-    bool operator<(const cruiserBoat &other) const;
-
-    void setDestLocation(const Location &dest_loc);
-
-    void stop();
-
-    void dock();
-
-    void dead();
-
-    void move();
-
-    void update();
-    void ask_fuel();
 };
 /********************************/
 #endif

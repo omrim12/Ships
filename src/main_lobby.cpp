@@ -1,9 +1,7 @@
-#include <process.h>
 #include <iostream>
-
-#include "../Controller/controller_main.cpp"
-#include "../Model/model_main.cpp"
-#include "../View/view_main.cpp"
+#include "model_main.cpp"
+#include "view_main.cpp"
+#include "controller_main.cpp"
 
 using namespace std;
 /*************************/
@@ -28,8 +26,8 @@ int main(int argc, char **argv) {
 	}
 
 	controller_main(argc,argv);
-    model_main();
-    view_main();
+    //model_main();
+    //view_main();
 
 
     return 0;

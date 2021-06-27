@@ -13,8 +13,9 @@ enum order {
 };
 /*****************************************/
 enum Status {
-    Stopped, Docked, Dead, Move_to_Course, Move_to_Position, Move_to_Dest
+    Stopped, Docked, Dead, Move_to_Course, Move_to_Position, Move_to_Dest, Move_to_first
 };
+
 /*****************************************/
 struct Order {
     order ord;
@@ -35,6 +36,7 @@ struct Order {
     };
 
 };
+
 /*****************************************/
 struct unload_Port {
     weak_ptr<Port> port;
@@ -45,6 +47,7 @@ struct unload_Port {
     }
 
 };
+
 /*****************************************/
 enum dest_type {
     load, unload, None
@@ -65,7 +68,7 @@ protected:
 
     const double MAX_BOAT_FUEL;
     const string name;
-    int resistance;
+    int res_pow;         //resistance or attack power
     double curr_fuel;
     Status status;
     double curr_speed;
@@ -86,13 +89,12 @@ protected:
 
 
 public:
-    Boat(string &boat_name, double max_fuel = 0, int res = 0, int num = 0) : name(boat_name), MAX_BOAT_FUEL(max_fuel),
-                                                                             resistance(res), curr_fuel(max_fuel),
+    Boat(string &boat_name, double max_fuel = 0, int resPow = 0, int num = 0) : name(boat_name), MAX_BOAT_FUEL(max_fuel),
+                                                                             res_pow(resPow), curr_fuel(max_fuel),
                                                                              status(Stopped), curr_speed(0),
                                                                              direction(Direction()),
                                                                              curr_Location(Location()),
                                                                              dest_Location(Location()), type(None),
-																			 curr_num_of_containers(num),
                                                                              dest_port(weak_ptr<Port>()),
                                                                              available(true),
                                                                              waiting_in_fuel_queue(false),
@@ -108,63 +110,34 @@ public:
 
     Boat &operator=(Boat &&) = delete;
 
-    virtual void
-    addOrder(const string &ord_str, int deg=0, double speed=0, double x=0, double y=0, weak_ptr<Port> port=weak_ptr<Port>(), weak_ptr<Boat> boat=weak_ptr<Boat>(),
-             int cont_capacity=0) {
-        order curr_ord;
-        if (ord_str == "course") curr_ord = Course;
-        else if (ord_str == "position") curr_ord = Position;
-        else if (ord_str == "destination") curr_ord = Destination;
-        else if (ord_str == "dock_at") curr_ord = Dock_at;
-        else if (ord_str == "attack") curr_ord = Attack;
-        else curr_ord = Stop;
+    Location getCurrLocation();
 
-        Order new_order = Order(curr_ord, deg, speed, port, boat, x, y, cont_capacity);
-        orders_queue.push(new_order);   //adding order to queue
-    }
+    void setNumOfContainers(int n);
 
-    virtual bool dest_is_load(weak_ptr<Port> dest) {
-        for (auto &p: ports_to_load) {
-            if (p.lock().get() == dest.lock().get()) { ///???operator ==
-                return true;
-            }
-        }
-        return false;
-    }
+    void setAvailable(bool b);
 
-    virtual bool dest_is_unload(weak_ptr<Port> dest) {
-        for (auto &p: ports_to_unload) {
-            if (p.port.lock().get() == dest.lock().get()) { ///???operator ==
-                return true;
-            }
-        }
-        return false;
-    }
+    void addFuel(int cap);
 
-    virtual void add_load_dest(weak_ptr<Port> load_port) {
-        if (dest_is_load(load_port))return;  //there is nothing to do
-        else if (dest_is_unload(load_port)) cerr << "Destination is already for unload." << endl;
-        else ports_to_load.push_back(load_port);
-    }
+    void setWaiting(bool b) ;
 
-    virtual void add_unload_dest(weak_ptr<Port> unload_port, int capacity) {
-        if (dest_is_unload(unload_port))return;  //there is nothing to do
-        else if (dest_is_load(unload_port)) cerr << "Destination is already for load." << endl;
-        else {
-            unload_Port new_port(unload_port, capacity);
-            ports_to_unload.push_back(new_port);
-        }
-    }
+    void setAskForFuel(bool b) ;
 
-    virtual Boat &operator++() {
-        resistance++;
-        return *this;
-    }
+    void
+    addOrder(const string &ord_str, int deg = 0, double speed = 0, double x = 0, double y = 0,
+             weak_ptr<Port> port = weak_ptr<Port>(), weak_ptr<Boat> boat = weak_ptr<Boat>(),
+             int cont_capacity = 0);
 
-    virtual Boat &operator--() {
-        resistance--;
-        return *this;
-    }
+    virtual bool dest_is_load(weak_ptr<Port> dest);
+
+    virtual bool dest_is_unload(weak_ptr<Port> dest);
+
+    virtual void add_load_dest(weak_ptr<Port> load_port);
+
+    virtual void add_unload_dest(weak_ptr<Port> unload_port, int capacity);
+
+    virtual Boat &operator++();
+
+    virtual Boat &operator--();
 
     virtual void course(int deg, double speed) = 0;
 
@@ -174,83 +147,22 @@ public:
 
     virtual void dock(weak_ptr<Port> port) = 0;
 
-    virtual void attack(weak_ptr<Port> port) = 0;
+    virtual void attack(weak_ptr<Boat> boat) = 0;
 
     virtual void refuel() = 0;
 
     virtual void stop() = 0;
-
-    virtual void setAvailable(bool b) { available = b; }
-
-    virtual void addFuel(int cap) { curr_fuel += cap; }
-
-    virtual void setWaiting(bool b) { waiting_in_fuel_queue = b; }
-
-    virtual void setAskForFuel(bool b) {ask_fuel = b;}
-
-    virtual Location getLocation() const	{ return curr_Location; }
-
-    virtual string getName() const	{ return name; }
 
     //*inside status functions*
     virtual void in_dock_status() = 0;
 
     virtual void in_move_status() = 0;
 
+    virtual void patrol_move_to_first() =0;
 
-    virtual void update() {
-        if (available) {
-            if (!orders_queue.empty()) {
-                //start actions for curr order
-                Order curr_order = orders_queue.front();
-                available = false; //not available for other orders
+    virtual bool operator>(const Boat &other) const;
 
-                switch (curr_order.ord) {
-                    case (Course):
-                        course(curr_order.deg, curr_order.speed);
-                        break;
-                    case (Position):
-                        position(curr_order.x, curr_order.y, curr_order.speed);
-                        break;
-                    case (Destination):
-                        destination(curr_order.port, curr_order.speed);
-                        break;
-                    case (Dock_at):
-                        dock(curr_order.port);
-                        break;
-                    case (Attack):
-                        attack(curr_order.port);
-                        break;
-                    case (Stop):
-                        stop();
-                        break;
-                }
-            }
-            //remove order from queue
-            orders_queue.pop();
-        } else {
-            switch (status) {
-                case (Docked):
-                    in_dock_status();
-                    break;
-                case (Move_to_Dest):
-                    in_move_status();
-                    break;
-                case (Move_to_Course):
-                    in_move_status();
-                    break;
-                case (Move_to_Position):
-                    in_move_status();
-                    break;
-                case(Stopped):
-                    available=true;
-                    break;
-                case (Dead):
-                    //Boat stay in dead status forever
-                    break;
-            }
-        }
-    }
+    virtual void update();
 };
 
 #endif

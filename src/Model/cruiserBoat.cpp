@@ -1,72 +1,72 @@
-//
-// Created by User on 11/06/2021.
-//
-
 #include "cruiserBoat.h"
 
-void cruiserBoat::attackNextTick(weak_ptr<Boat>& boat){
-    to_attack=true;
-    attack_boat = boat;
+/********************************/
+void cruiserBoat::course(int deg, double speed) {
+    status = Move_to_Course;
+    direction = direction(deg);
+    curr_speed = speed;
 }
 
-void cruiserBoat::attack_now(){
-    if(attack_range >= curr_Location.distance_from(attack_boat.lock()->getCurrLocation())){
+/********************************/
+void cruiserBoat::position(double x, double y, double speed) {
+    status = Move_to_Position;
+    direction = Direction(Location(x, y));
+    curr_speed = speed;
+}
+
+/********************************/
+void cruiserBoat::attack(weak_ptr<Boat> attack_boat) {
+    if (attack_range >= curr_Location.distance_from(attack_boat.lock()->getCurrLocation())) {
+        //any way of attacking -> attack boat stop
         attack_boat.lock()->stop();
-    }
-    if(attack_range >= curr_Location.distance_from(attack_boat.lock()->getCurrLocation())){
-        if(attack_power > attack_boat.lock()->getResistance())  {
+        if (this > (*attack_boat)) {
             //Attack Succeeded
-            if(typeid(*attack_boat).name() == typeid(freighterBoat()).name()){
+            if (typeid(*attack_boat) == typeid(freighterBoat())) {
                 //Case of freighter boat:
                 //*attack boat will lose all containers she had
                 //*increment cruiser attack power
                 attack_boat.lock().get()->setNumOfContainers(0);
-                attack_power++;
+                this++;
 
-            }
-            else if(typeid(*attack_boat).name() == typeid(patrolBoat()).name()){
+            } else if (typeid(*attack_boat) == typeid(patrolBoat())) {
                 //Case of patrol boat:
-                //*decrement patrol resistance
+                //*decrement patrol res_pow
                 //*increment cruiser attack power
-                attack_boat.lock()->operator--();
-                attack_power++;
+                (*attack_boat)--;
+                this++;
 
             }
         }
-    }
-    else{
+    } else {
         //Attack Failed
-        if(typeid(*attack_boat).name() == typeid(freighterBoat()).name()){
+        if (typeid(*attack_boat) == typeid(freighterBoat())) {
             //Case of freighter boat:
             //*decrement cruiser boat power attack
-            attack_power--;
+            this--;
 
-        }
-        else if(typeid(*attack_boat).name() == typeid(patrolBoat()).name()){
+        } else if (typeid(*attack_boat).name() == typeid(patrolBoat()).name()) {
             //Case of patrol boat:
-            //*increment patrol resistance
+            //*increment patrol res_pow
             //*decrement cruiser attack power
-            attack_boat.lock()->operator++();
-            attack_power--;
+            (*attack_boat)++;
+            this--;
 
         }
 
     }
 }
 
-///***in general update - make sure cruiser boat attack will be at the end
-
-void cruiserBoat::update() {
-    ///implements***
-
-
+/********************************/
+void cruiserBoat::in_move_status() {
+    curr_Location = curr_Location.next_Location(direction, curr_speed));
 }
 
 
+/********************************/
 ostream &operator<<(ostream &out, const cruiserBoat &ship) {
     out << ship.name << " at " << ship.curr_Location << ", force: " << ship.attack_power << ", Moving on course "
         << ship.direction.get_degree() << " deg, speed " << ship.curr_speed << " nm/hr" << endl;
     return out;
 }
-
+/********************************/
 
