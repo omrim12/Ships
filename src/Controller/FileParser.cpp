@@ -32,11 +32,11 @@ FileParser::FileParser(const char * filename)	{
 			parser << line_buffer;
 			if( parser.fail() )	{ throw InvalidContentException(line); }
 
-			// extract port's name ( check if length does not exceed ??? )
+			// extract port's name
 			parser >> port_name;
 			if( port_name.length() > 12 )	{ throw InvalidContentException(line); }
 
-			// extract port's location ( every location is valid ? )
+			// extract port's location
 			getline(parser,extract,'(');
 			getline(parser,extract,',');
 			sub_parser << extract;

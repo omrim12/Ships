@@ -92,6 +92,7 @@ public:
                                                                              direction(Direction()),
                                                                              curr_Location(Location()),
                                                                              dest_Location(Location()), type(None),
+																			 curr_num_of_containers(num),
                                                                              dest_port(weak_ptr<Port>()),
                                                                              available(true),
                                                                              waiting_in_fuel_queue(false),
@@ -186,6 +187,10 @@ public:
     virtual void setWaiting(bool b) { waiting_in_fuel_queue = b; }
 
     virtual void setAskForFuel(bool b) {ask_fuel = b;}
+
+    virtual Location getLocation() const	{ return curr_Location; }
+
+    virtual string getName() const	{ return name; }
 
     //*inside status functions*
     virtual void in_dock_status() = 0;

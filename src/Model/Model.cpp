@@ -25,6 +25,16 @@ int Model::findPortByLocation(const Location &loc)	{
     return -1;
 }
 /*************************************/
+int Model::findBoatByLocation(const Location& loc)	{
+
+   for(unsigned int i = 0; i < all_boats.size(); ++i)	{
+		if( all_boats[i].get()->getLocation() == loc )	{ return i; }
+	}
+
+	return -1;
+
+}
+/*************************************/
 void Model::status()	{ //print status of all objects in the simulation
 
 	for( auto& boat : all_boats )	{ cout << boat << endl; }

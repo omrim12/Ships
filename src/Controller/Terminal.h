@@ -8,9 +8,12 @@ class Terminal	 {
 public:
     /*exceptions*/
     class InvalidInputException : public exception	{
-        public:
-        	virtual const char *what() const noexcept	{return "ERROR: invalid input inserted.";}
+        string msg;
+    	public:
+        	InvalidInputException(string msg):msg(msg)	{}
+        	virtual const char *what() const noexcept	{return string("ERROR: invalid input : " + msg).c_str();}
     };
+
 
     /*c'tors & d'tors*/
     Terminal() {Time = 0;}

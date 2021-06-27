@@ -1,8 +1,4 @@
-
-#include "Model.h"
-#include "freighterBoat.h"
-#include "cruiserBoat.h"
-#include "patrolBoat.h"
+class freighterBoat;
 /******************************/
 //TODO: run tests for:
 //2.	freighter and patrol boat class - for some reason these are not known in the file. check cause!
@@ -10,7 +6,7 @@
 /******************************/
 void model_main() {
 
-    freighterBoat f("emma", );
+    freighterBoat f;
 
 
 

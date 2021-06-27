@@ -30,6 +30,7 @@ public:
     weak_ptr<Port> getPort(const string& port_name);
 
     int findPortByLocation(const Location &loc);
+    int findBoatByLocation(const Location& loc);
     vector<shared_ptr<Port>>& getAllPorts();
     vector<shared_ptr<Boat>>& getAllBoats();
 

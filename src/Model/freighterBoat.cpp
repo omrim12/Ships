@@ -1,12 +1,21 @@
 #include "freighterBoat.h"
 
+#include <algorithm>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include "Location.h"
+#include "Port.h"
+
 freighterBoat::freighterBoat(string &boat_name, int cont_cap, int res) : Boat(boat_name, MAX_FRI_FUEL, res, cont_cap),
                                                                          MAX_CONTAINERS_CAPACITY(cont_cap) {};
 
 /*************************************/
 void freighterBoat::course(int deg, double speed) {
     status = Move_to_Course;
-    direction = direction(deg);
+    direction = Direction(deg);
     curr_speed = speed;
     dest_port.reset();
     type = None;
@@ -119,7 +128,7 @@ void freighterBoat::in_dock_status() {
 
 /*************************************/
 void freighterBoat::in_move_status() {
-    Location next_Location = curr_Location.next_Location(direction, curr_speed));
+    Location next_Location = curr_Location.next_Location(direction, curr_speed);
     double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
 
     if (curr_fuel - use_fuel <= 0) {
@@ -142,7 +151,7 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
             stat_string +=
                     "Moving to " + ship.dest_port.lock()->getPortName() + " on course " + ship.direction.get_degree() +
                     " deg" + ", speed " + ship.curr_speed + " nm/hr " + " Containers: " + ship.curr_num_of_containers;
-            switch (type) {
+            switch (ship.type) {
                 case (load):
                     stat_string += "moving to loading destination. ";
                     break;
