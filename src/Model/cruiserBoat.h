@@ -22,7 +22,7 @@ public:
     //destination, dock at, stop
     cruiserBoat(string &boat_name, int pow, int range): Boat(boat_name,0,pow), attack_range(range){};
     ~cruiserBoat();
-    void course(int deg, double speed);
+    void course(double deg, double speed);
     void position(double x, double y, double speed);
     void attack(weak_ptr<Boat> boat);
     void in_move_status();

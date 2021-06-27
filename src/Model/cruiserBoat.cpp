@@ -1,7 +1,7 @@
 #include "cruiserBoat.h"
 
 /********************************/
-void cruiserBoat::course(int deg, double speed) {
+void cruiserBoat::course(double deg, double speed) {
     status = Move_to_Course;
     direction = direction(deg);
     curr_speed = speed;
@@ -10,7 +10,7 @@ void cruiserBoat::course(int deg, double speed) {
 /********************************/
 void cruiserBoat::position(double x, double y, double speed) {
     status = Move_to_Position;
-    direction = Direction(Location(x, y));
+    direction = Direction(Location(x,y),curr_Location);
     curr_speed = speed;
 }
 
@@ -58,13 +58,13 @@ void cruiserBoat::attack(weak_ptr<Boat> attack_boat) {
 
 /********************************/
 void cruiserBoat::in_move_status() {
-    curr_Location = curr_Location.next_Location(direction, curr_speed));
+    curr_Location = curr_Location.next_Location(direction, curr_speed);
 }
 
 
 /********************************/
 ostream &operator<<(ostream &out, const cruiserBoat &ship) {
-    out << ship.name << " at " << ship.curr_Location << ", force: " << ship.attack_power << ", Moving on course "
+    out << ship.name << " at " << ship.curr_Location << ", force: " << ship.res_pow << ", Moving on course "
         << ship.direction.get_degree() << " deg, speed " << ship.curr_speed << " nm/hr" << endl;
     return out;
 }

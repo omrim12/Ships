@@ -1,9 +1,12 @@
 #include "View.h"
+#include "Boat.h"
+#include <memory>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include "../Model/Boat.h"
+#include <iostream>
 #include "../Model/Location.h"
+using namespace std;
 /***********************************/
 View::View():axis_base(Location(-10,-10)),map_size(DEFAULT_MAP_SIZE),scale(DEFAULT_MAP_SCALE)	{}
 /***********************************/
@@ -38,8 +41,8 @@ void View::show()	{
 	int curr_disp_len;
 	int max_length = 4;
 	int boat_index = -1;
-	bool signed_boats[Model::getInstance()->all_boats.size()];
-	for(unsigned int i = 0; i < Model::getInstance()->all_boats.size(); ++i)	{ signed_boats[i] = false; }
+	bool signed_boats[Model::getInstance()->getAllBoats().size()];
+	for(unsigned int i = 0; i < Model::getInstance()->getAllBoats().size(); ++i)	{ signed_boats[i] = false; }
 
 	for(int i = 0; i < map_size; i++)	{
 
@@ -52,7 +55,7 @@ void View::show()	{
 
 			print_multiple(' ',max_length - curr_disp_len);
 
-			// --print out line display
+			// --print out line display--
 			cout << line_display;
 			++count;
 		}
@@ -63,25 +66,25 @@ void View::show()	{
 
 			boat_index = -1;
 
-			for(unsigned int k = 0; k < Model::getInstance()->all_boats.size(); ++k)	{
+			for(unsigned int k = 0; k < Model::getInstance()->getAllBoats().size(); ++k)	{
 
-				if( Model::getInstance()->all_boats[k]->getLocation().get_y() == axis_base.y + (map_size - i) * scale &&
-						Model::getInstance()->all_boats[k]->getLocation().get_x() == axis_base.x + j * scale  )	{
+				if( Model::getInstance()->getAllBoats()[k]->getCurrLocation().get_y() == axis_base.get_y() + (map_size - i) * scale &&
+					Model::getInstance()->getAllBoats()[k]->getCurrLocation().get_x() == axis_base.get_x() + j * scale  )	{
 					if( !signed_boats[k] )	{
 						boat_index = k;
-						cout << Model::getInstance()->all_boats[k]->getName().substr(0,2);
+						cout << Model::getInstance()->getAllBoats()[k]->getName().substr(0,2);
 						signed_boats[k] = true;
 					}
 				}
 
 
-				if( Model::getInstance()->all_boats[k]->getLocation().get_y() >= axis_base.y + (map_size - (i + 1)) * scale &&
-					Model::getInstance()->all_boats[k]->getLocation().get_y() < axis_base.y + (map_size - i) * scale &&
-					Model::getInstance()->all_boats[k]->getLocation().get_x() >= axis_base.x + (j - 1) * scale &&
-					Model::getInstance()->all_boats[k]->getLocation().get_x() < axis_base.x + j * scale )	{
+				if( Model::getInstance()->getAllBoats()[k]->getCurrLocation().get_y() >= axis_base.get_y() + (map_size - (i + 1)) * scale &&
+					Model::getInstance()->getAllBoats()[k]->getCurrLocation().get_y() < axis_base.get_y() + (map_size - i) * scale &&
+					Model::getInstance()->getAllBoats()[k]->getCurrLocation().get_x() >= axis_base.get_x() + (j - 1) * scale &&
+					Model::getInstance()->getAllBoats()[k]->getCurrLocation().get_x() < axis_base.get_x() + j * scale )	{
 						if( !signed_boats[k] )	{
 							boat_index = k;
-							cout << Model::getInstance()->all_boats[k]->getName().substr(0,2);
+							cout << Model::getInstance()->getAllBoats()[k]->getName().substr(0,2);
 							signed_boats[k] = true;
 						}
 				}
@@ -101,9 +104,9 @@ void View::show()	{
 
 		if( !(i % 3) )	{ // record column display every third column
 			if( i != 0 )	{
-				cout.width(num_length(axis_base.x + 3 * count * scale) + 4); }
-			cout << axis_base.x + 3 * count * scale;
-			++count;
+				cout.width(num_length(axis_base.get_x() + 3 * count * scale) + 4); }
+				cout << axis_base.get_x() + 3 * count * scale;
+				++count;
 		}
 		/*
 		 *

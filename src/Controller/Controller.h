@@ -1,8 +1,6 @@
 #ifndef CONTROLLER_CONTROLLER_H_
 #define CONTROLLER_CONTROLLER_H_
-#include "FileParser.h"
-#include "../Model/Model.h"
-#include "../View/View.h"
+#include "Terminal.h"
 /**********************************/
 class Terminal;
 /**********************************/
@@ -24,7 +22,6 @@ public:
 	/* class functions */
 	void load_data(const char * filename);
 	void run();
-
 };
 /**********************************/
 #endif

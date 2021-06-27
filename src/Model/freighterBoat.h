@@ -19,7 +19,7 @@ public:
     /*class functions*/
     void load_boat();
     void unload_boat();
-    void course(int deg, double speed);
+    void course(double deg, double speed);
 
     void position(double x, double y, double speed);
 

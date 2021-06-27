@@ -1,7 +1,8 @@
 #include "Boat.h"
-
-
+/********************************/
 Location Boat::getCurrLocation(){return curr_Location;}
+/********************************/
+string Boat::getName() const	{ return name; }
 /********************************/
 void Boat::setNumOfContainers(int n){ curr_num_of_containers=n;}
 /********************************/

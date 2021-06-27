@@ -59,9 +59,7 @@ class freighterBoat;
 class cruiserBoat;
 
 class patrolBoat;
-
 /*****************************************/
-
 class Boat : public gameObj {
 protected:
     /*data members*/
@@ -89,16 +87,21 @@ protected:
 
 
 public:
-    Boat(string &boat_name, double max_fuel = 0, int resPow = 0, int num = 0) : name(boat_name), MAX_BOAT_FUEL(max_fuel),
-                                                                             res_pow(resPow), curr_fuel(max_fuel),
-                                                                             status(Stopped), curr_speed(0),
-                                                                             direction(Direction()),
-                                                                             curr_Location(Location()),
-                                                                             dest_Location(Location()), type(None),
-                                                                             dest_port(weak_ptr<Port>()),
-                                                                             available(true),
-                                                                             waiting_in_fuel_queue(false),
-                                                                             ask_fuel(false) {};
+    Boat(string &boat_name, double max_fuel = 0, int resPow = 0, int num = 0) :	MAX_BOAT_FUEL(max_fuel),
+																	name(boat_name),
+																	res_pow(resPow),
+																	curr_fuel(max_fuel),
+																	status(Stopped),
+																	curr_speed(0),
+																	direction(Direction()),
+																	curr_Location(Location()),
+																	dest_Location(Location()),
+																	dest_port(weak_ptr<Port>()),
+																	type(None),
+																	curr_num_of_containers(0),
+																	available(true),
+																	waiting_in_fuel_queue(false),
+																	ask_fuel(false) {};
 
     virtual ~Boat() {};
 
@@ -112,18 +115,19 @@ public:
 
     Location getCurrLocation();
 
+    string getName() const;
+
     void setNumOfContainers(int n);
 
     void setAvailable(bool b);
 
     void addFuel(int cap);
 
-    void setWaiting(bool b) ;
+    void setWaiting(bool b);
 
-    void setAskForFuel(bool b) ;
+    void setAskForFuel(bool b);
 
-    void
-    addOrder(const string &ord_str, int deg = 0, double speed = 0, double x = 0, double y = 0,
+    void addOrder(const string &ord_str, int deg = 0, double speed = 0, double x = 0, double y = 0,
              weak_ptr<Port> port = weak_ptr<Port>(), weak_ptr<Boat> boat = weak_ptr<Boat>(),
              int cont_capacity = 0);
 

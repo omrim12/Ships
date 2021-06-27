@@ -23,7 +23,6 @@ private:
     double fuel_product_per_hr;
     deque < weak_ptr<Boat> > ready_to_fuel;
 
-
 public:
     /*c'tors & d'tors*/
     Port();

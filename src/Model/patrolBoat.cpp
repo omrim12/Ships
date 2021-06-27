@@ -1,5 +1,13 @@
 #include "patrolBoat.h"
-
+#include "Model.h"
+#include "Location.h"
+#include "Port.h"
+#include <algorithm>
+#include <iostream>
+#include <memory>
+#include <queue>
+#include <string>
+#include <vector>
 /********************************************/
 class cmp {
     //sort ports by distance from start port.
@@ -25,7 +33,8 @@ patrolBoat::~patrolBoat() {}
 /********************************************/
 patrolBoat::patrolBoat(string &boat_name, int res) : Boat(boat_name, MAX_PAT_FUEL, res), cursor(0), patrol_speed(0),
                                                      dockedStatus(fuel) {
-//    /TODO:*copy all ports vector to - curr_patrol ****
+
+	curr_patrol(Model::getInstance()->getAllPorts().begin(),Model::getInstance()->getAllPorts().end());
 }
 
 /********************************************/
@@ -36,7 +45,7 @@ void patrolBoat::destination(weak_ptr<Port> port, double speed) {
 /********************************************/
 void patrolBoat::start_patrol(weak_ptr<Port> port, double speed) {
 
-    std::sort(curr_patrol.begin(), curr_patrol.end(), cmp(start_Port));
+    std::sort(curr_patrol.begin(), curr_patrol.end(), cmp(*port.lock()));
     cursor = 0;
     dest_Location = curr_patrol[cursor + 1].lock()->get_Location();
     status = Move_to_Dest;
@@ -63,7 +72,7 @@ void patrolBoat::in_dock_status() {
         case fuel:
             refuel();
             break;
-        case dock:
+        case Docked:
             break;
         case set_dest:
             if (cursor == curr_patrol.size() - 1) {
@@ -95,7 +104,7 @@ void patrolBoat::patrol_move_to_first() {
         cout << "END OF " << name << "'s PATROL. " << endl;
         return;
     }
-    Location next_Location = curr_Location.next_Location(direction, curr_speed));
+    Location next_Location = curr_Location.next_Location(direction, curr_speed);
     double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
 
     if (curr_fuel - use_fuel < 0) {
@@ -110,10 +119,10 @@ void patrolBoat::patrol_move_to_first() {
 /********************************************/
 void patrolBoat::refuel() {
     //can fuel only if ready to fuel queue is empty
-    Port curr_port = curr_patrol[cursor];
+    Port curr_port = *curr_patrol[cursor].lock();
 
     if (curr_port.readyToFuelEmpty()) {
-        curr_port.fuel(this);
+        curr_port.fuel(*this);
     }
     return;
 
@@ -127,7 +136,7 @@ void patrolBoat::in_move_status() {
         curr_speed = 0;
         return;
     }
-    Location next_Location = curr_Location.next_Location(direction, curr_speed));
+    Location next_Location = curr_Location.next_Location(direction, curr_speed);
     double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
 
     if (curr_fuel - use_fuel < 0) {
@@ -149,12 +158,8 @@ ostream &operator<<(ostream &out, const patrolBoat &ship) {
             status_str += "Moving to ";
             status_str += ship.dest_Location;
             status_str += " on course " + ship.direction.get_degree() + " deg, ";
-            status_str += "speed " + ship.curr_speed + " nm/hr"
+            status_str += "speed " + ship.curr_speed + " nm/hr";
             break;
-
-//    Docked at Nagoya, step time 1: Try to fuel
-//  Docked at Nagoya, step time 2: Docking
-// Docked at Nagoya,step time 3: set next destination in current patrol
 
         case (Docked):
             status_str += "Docked at " + ship.dest_port.lock()->getPortName() +", step time ";

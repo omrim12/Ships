@@ -28,7 +28,7 @@ int Model::findPortByLocation(const Location &loc)	{
 int Model::findBoatByLocation(const Location& loc)	{
 
    for(unsigned int i = 0; i < all_boats.size(); ++i)	{
-		if( all_boats[i].get()->getLocation() == loc )	{ return i; }
+		if( all_boats[i].get()->getCurrLocation() == loc )	{ return i; }
 	}
 
 	return -1;
@@ -55,6 +55,8 @@ void Model::create(const string& boat_name, const string& boat_type, int x, int 
 	else if( boat_type == "Cruiser" )	{ all_boats.push_back(make_shared<Boat>(new Cruiser())); }
 	else	{ all_boats.push_back(make_shared<Boat>(new patrolBoat()); }
 	*/
+
+	//TODO : fill out all c'tors !!
 
 
 }

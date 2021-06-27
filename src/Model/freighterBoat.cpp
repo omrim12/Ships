@@ -1,10 +1,10 @@
 #include "freighterBoat.h"
-
+#include "Direction.h"
+#include<bits/stdc++.h>
 freighterBoat::freighterBoat(string &boat_name, int cont_cap, int res) : Boat(boat_name, MAX_FRI_FUEL, res, cont_cap),
                                                                          MAX_CONTAINERS_CAPACITY(cont_cap) {};
-
 /*************************************/
-void freighterBoat::course(int deg, double speed) {
+void freighterBoat::course(double deg, double speed) {
     status = Move_to_Course;
     direction = direction(deg);
     curr_speed = speed;
@@ -15,7 +15,7 @@ void freighterBoat::course(int deg, double speed) {
 /*************************************/
 void freighterBoat::position(double x, double y, double speed) {
     status = Move_to_Position;
-    direction = Direction(Location(x, y));
+    direction = Direction(Location(x, y),curr_Location);
     curr_speed = speed;
     dest_port.reset();
     type = None;
@@ -27,7 +27,7 @@ void freighterBoat::destination(weak_ptr<Port> port, double speed) {
     else if (dest_is_unload(port)) type = unload;
     else type = None;
     status = Move_to_Dest;
-    direction = Direction(port.lock()->get_Location());
+    direction = Direction(port.lock()->get_Location(),curr_Location);
     dest_port = std::move(port);
     curr_speed = speed;
 }
@@ -38,7 +38,7 @@ void freighterBoat::dock(weak_ptr<Port> port) {
         curr_speed = 0;
         curr_Location = port.lock()->get_Location();
         if (status == Move_to_Dest) {
-            if (*port.lock().get() == *dest_port.lock().get()) {    ///???operator==
+            if (*port.lock().get() == *dest_port.lock().get()) {
                 //case of docking port is same as destination port:
                 //*check if destination is from load/unload type
                 switch (type) {
@@ -80,7 +80,7 @@ void freighterBoat::stop() {
 void freighterBoat::unload_boat() {
     int to_unload;
     for (auto &p: ports_to_unload) {
-        if (*p.port.lock().get() == *dest_port.lock().get()) {   ///???operator ==
+        if (*p.port.lock().get() == *dest_port.lock().get()) {
             to_unload = p.capacity;
             break;
         }
@@ -96,7 +96,7 @@ void freighterBoat::unload_boat() {
     //else
     dest_port.lock()->load_port(to_unload);
     curr_num_of_containers -= to_unload;
-    ports_to_unload.remove(ports_to_unload.begin(), ports_to_unload.end(), dest_port);
+    ports_to_unload.erase(find(ports_to_unload.begin(), ports_to_unload.end(), dest_port));
     type = None;
 }
 
@@ -106,7 +106,7 @@ void freighterBoat::load_boat() {
     dest_port.lock()->unload_port(MAX_CONTAINERS_CAPACITY - curr_num_of_containers);
     curr_num_of_containers = MAX_CONTAINERS_CAPACITY;
     //delete port from load ports list
-    ports_to_load.remove(ports_to_load.begin(), ports_to_load.end(), dest_port);
+    ports_to_load.erase(find(ports_to_load.begin(), ports_to_load.end(), dest_port));
 }
 
 /*************************************/
@@ -126,7 +126,7 @@ void freighterBoat::in_move_status() {
         curr_Location=dest_Location;
         return;
     }
-    Location next_Location = curr_Location.next_Location(direction, curr_speed));
+    Location next_Location = curr_Location.next_Location(direction, curr_speed);
     double use_fuel = curr_Location.distance_from(next_Location) * FUEL_PER_NM;
 
     if (curr_fuel - use_fuel < 0) {
@@ -150,7 +150,7 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
             stat_string +=
                     "Moving to " + ship.dest_port.lock()->getPortName() + " on course " + ship.direction.get_degree() +
                     " deg" + ", speed " + ship.curr_speed + " nm/hr " + " Containers: " + ship.curr_num_of_containers;
-            switch (type) {
+            switch (ship.type) {
                 case (load):
                     stat_string += "moving to loading destination. ";
                     break;
@@ -172,7 +172,7 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
                     " Containers: " + ship.curr_num_of_containers;
             break;
         case (Docked):
-            stat_string += "Docked at " + ship.destPortName;
+            stat_string += "Docked at " + ship.dest_port.lock()->getPortName();
             break;
 
         case (Dead):
