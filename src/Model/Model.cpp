@@ -1,6 +1,15 @@
 #include "Model.h"
+
+#include <iostream>
+#include <memory>
+#include <string>
+
+#include "Location.h"
+#include "patrolBoat.h"
 #include "Port.h"
 
+class cruiserBoat;
+class freighterBoat;
 /*************************************/
 Model::~Model() {}
 
@@ -63,7 +72,12 @@ void Model::create(const string &boat_name, const string &boat_type, int x, int 
         all_boats.push_back(make_shared<Boat>(new freighterBoat(boat_name, cap_range, res_pow)));
     }
     else if (boat_type == "Cruiser") { all_boats.push_back(make_shared<Boat>(new cruiserBoat(boat_name,res_pow,cap_range))); }
-    else { all_boats.push_back(make_shared<Boat>(new patrolBoat(boat_name,res_pow)); }
-    ///????
+    else { all_boats.push_back(make_shared<Boat>(new patrolBoat(boat_name,res_pow))); }
+    /*
+     *
+     * TODO: where do we check if name of boat type is valid ?
+     *
+     *
+     */
 }
 

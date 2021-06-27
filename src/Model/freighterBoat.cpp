@@ -243,4 +243,8 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
     return out;
 }
 
+/***************** USED FOR COMPILATION ONLY *******************/
+void freighterBoat::patrol_move_to_first()	{}
+/*************************************/
+void freighterBoat::attack(weak_ptr<Boat>)	{}
 /*************************************/

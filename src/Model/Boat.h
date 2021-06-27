@@ -1,10 +1,14 @@
 #ifndef EX3_BoatS_SIMULATION_Boat_H
 #define EX3_BoatS_SIMULATION_Boat_H
 
-#include "Direction.h"
-#include "gameObj.h"
-#include "Port.h"
+#include <algorithm>
+#include <memory>
 #include <queue>
+#include <string>
+#include "GameObj.h"
+#include "Direction.h"
+#include "Location.h"
+#include "Port.h"
 
 using namespace std;
 
@@ -49,11 +53,11 @@ struct unload_Port {
 };
 
 /*****************************************/
-class freighterBoat;
-
-class cruiserBoat;
-
-class patrolBoat;
+//class freighterBoat;
+//
+//class cruiserBoat;
+//
+//class patrolBoat;
 /*****************************************/
 class Boat : public gameObj {
 protected:
@@ -101,6 +105,10 @@ public:
 
     string getName() const;
 
+    double getFuel() const;
+
+    double getMaxFuel() const;
+
     void setAvailable(bool b);
 
     void addFuel(int cap);
@@ -117,7 +125,7 @@ public:
 
     virtual Boat &operator--();
 
-    virtual void course(int deg, double speed) = 0;
+    virtual void course(double deg, double speed) = 0;
 
     virtual void position(double x, double y, double speed) = 0;
 

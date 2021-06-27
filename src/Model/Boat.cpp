@@ -4,11 +4,15 @@ Location Boat::getCurrLocation(){return curr_Location;}
 /********************************/
 string Boat::getName() const	{ return name; }
 /********************************/
+double Boat::getFuel() const	{ return curr_fuel; }
+/********************************/
+double Boat::getMaxFuel() const	{ return MAX_BOAT_FUEL; }
+/********************************/
 void Boat::setAvailable(bool b) { available = b; }
 /********************************/
-void Boat::setWaiting(bool b) { waiting_in_fuel_queue = b; }
+void Boat::setWaiting(bool b) { waiting_in_fuel_queue = b; } // NO SUCH FIELD ?
 /********************************/
-void Boat::setAskForFuel(bool b) { ask_fuel = b; }
+void Boat::setAskForFuel(bool b) { ask_fuel = b; } // NO SUCH FIELD ?
 /********************************/
 void Boat::addFuel(int cap) { curr_fuel += cap; }
 /********************************/

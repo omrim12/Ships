@@ -1,10 +1,6 @@
 #include <exception>
 #include <string>
-
 #include "../View/View.h"
-
-/*****************************/
-class Controller;
 /*****************************/
 class Terminal	 {
     static int Time;

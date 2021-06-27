@@ -1,3 +1,4 @@
+#include "Boat.h"
 #include "Port.h"
 #include "patrolBoat.h"
 #include "freighterBoat.h"
@@ -58,21 +59,21 @@ void Port::load_port(int cont)	{ containers += cont; }
 /********************************************/
 void Port::fuel()	{
 
-    double required_fuel = ready_to_fuel.front().lock()->getMaxFuel() - ready_to_fuel.front().lock()->getCurrFuel();
+    double required_fuel = ready_to_fuel.front().lock()->getMaxFuel() - ready_to_fuel.front().lock()->getFuel();
 
     // check if fuel action is valid
     if( required_fuel <= fuel_capacity )	{
 
         ready_to_fuel.front().lock()->setAddFuel(required_fuel);
         new_fuel_capacity = fuel_capacity - required_fuel;
-        ready_to_fuel.pop();
+        ready_to_fuel.pop_front();
 
     }
 }
-/********************************************/
+/********************************************/ // TODO: WHICH IMPLEMENTATION IS UP TO DATE ? (ABOVE OR DOWN)
 void Port::fuel(patrolBoat& boat){
 
-    double required_fuel = boat.getMaxFuel() - boat.getCurrFuel();
+    double required_fuel = boat.getMaxFuel() - boat.getFuel();
 
     // check if fuel action is valid
     if( required_fuel <= fuel_capacity )	{
@@ -85,7 +86,7 @@ void Port::fuel(patrolBoat& boat){
 }
 
 /********************************************/
-void Port::addToQueue(weak_ptr<Boat> boat){ ready_to_fuel.push(boat); }
+void Port::addToQueue(weak_ptr<Boat> boat){ ready_to_fuel.push_back(boat); }
 /********************************************/
 void Port::removeFromQueue(weak_ptr<Boat> boat){
     for(auto it = ready_to_fuel.begin(); it != ready_to_fuel.end(); it++)   {

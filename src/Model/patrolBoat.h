@@ -27,7 +27,7 @@ public:
     /*c'tors & d'tors*/
     ~patrolBoat();
 
-    patrolBoat(string &boat_name, int res);
+    patrolBoat(string boat_name, int res);
 
 //    not implemented functions:
 /**********************************/
@@ -49,6 +49,14 @@ public:
     void in_dock_status();
 
     void patrol_move_to_first();
+
+    void attack(weak_ptr<Boat>);
+
+    void course(double,double);
+
+    void dock(weak_ptr<Port>);
+
+    void position(double,double,double);
 
     /*operators*/
     friend ostream &operator<<(ostream &out, const patrolBoat &ship);

@@ -24,7 +24,7 @@ private:
 
 public:
     /*c'tors & d'tors*/
-    freighterBoat(string& boat_name,int containers_capacity, int res);
+    freighterBoat(string boat_name,int containers_capacity, int res);
     ~freighterBoat()	{}
 
     void setNumOfContainers(int n);
@@ -46,8 +46,12 @@ public:
     void stop();
 
     void in_dock_status();
+
     void in_move_status();
 
+    void patrol_move_to_first();
+
+    void attack(weak_ptr<Boat>);
 
     bool dest_is_load(weak_ptr<Port> dest);
 

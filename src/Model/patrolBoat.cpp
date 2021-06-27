@@ -201,4 +201,12 @@ ostream &operator<<(ostream &out, const patrolBoat &ship) {
     return out;
 }
 
+/******************** FOR COMPILER PURPOSES ONLY ************************/
+void patrolBoat::attack(weak_ptr<Boat>)	{}
+/********************************************/
+void patrolBoat::course(double,double)	{}
+/********************************************/
+void patrolBoat::dock(weak_ptr<Port>)	{}
+/********************************************/
+void patrolBoat::position(double,double,double)	{}
 /********************************************/
