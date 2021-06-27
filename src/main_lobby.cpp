@@ -7,15 +7,23 @@ using namespace std;
 /*************************/
 //TODO: to be implemented/fixed:
 
+// -----GENERALL-----
+//1.	write descriptions for all functions.
+//2.	write README file including all assumptions / implementations details
+//		that needs to be raised.
+//3.	run tests for all class functions.
+
 // -----MODEL-----
-//1.	fix Boat class deduction via Controller/terminal.cpp .
-//2.	check
-//3.	add exceptions to Boat, freigther, patrol, cruiser and port.
+//1.	finish port class (including operator == )
+//2.	implement create at Model.cpp
+//3.	move through _todo's to see if any assignements left behind
 
 // -----VIEW-----
-
+//1.	fix column and row display to match map size.
+//2.	fix boat location display (not accurate by map display).
 
 // -----CONTROLLER-----
+//1.	run tests for terminal
 
 /*************************/
 int main(int argc, char **argv) {
@@ -25,10 +33,8 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	controller_main(argc,argv);
-    //model_main();
-    //view_main();
-
+	Controller simulation_control;
+	simulation_control.load_data(argv[1]);
 
     return 0;
 }

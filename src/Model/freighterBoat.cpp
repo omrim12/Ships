@@ -6,7 +6,7 @@ freighterBoat::freighterBoat(string &boat_name, int cont_cap, int res) : Boat(bo
 /*************************************/
 void freighterBoat::course(double deg, double speed) {
     status = Move_to_Course;
-    direction = direction(deg);
+    direction = Direction(deg);
     curr_speed = speed;
     dest_port.reset();
     type = None;

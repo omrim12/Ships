@@ -33,8 +33,9 @@ patrolBoat::~patrolBoat() {}
 /********************************************/
 patrolBoat::patrolBoat(string &boat_name, int res) : Boat(boat_name, MAX_PAT_FUEL, res), cursor(0), patrol_speed(0),
                                                      dockedStatus(fuel) {
-
-	curr_patrol(Model::getInstance()->getAllPorts().begin(),Model::getInstance()->getAllPorts().end());
+	for( auto& port : Model::getInstance()->getAllPorts() )	{
+		curr_patrol.push_back(weak_ptr<Port>(port));
+	}
 }
 
 /********************************************/
@@ -85,12 +86,12 @@ void patrolBoat::in_dock_status() {
                 return;
             } else {
                 cursor++;
-                dest_Location = curr_patrol[cursor];
+                dest_Location = *curr_patrol[cursor].lock();
                 status = Move_to_Dest;
                 curr_speed = patrol_speed;
             }
     }
-    dockedStatus = (dockedStatus + 1) % 3;
+    dockedStatus = (static_cast<int>(dockedStatus) + 1) % 3;
 }
 
 /********************************************/
@@ -157,8 +158,8 @@ ostream &operator<<(ostream &out, const patrolBoat &ship) {
         case (Move_to_Dest):
             status_str += "Moving to ";
             status_str += ship.dest_Location;
-            status_str += " on course " + ship.direction.get_degree() + " deg, ";
-            status_str += "speed " + ship.curr_speed + " nm/hr";
+            status_str += " on course " + to_string(ship.direction.get_degree()) + " deg, ";
+            status_str += "speed " + to_string(ship.curr_speed) + " nm/hr";
             break;
 
         case (Docked):

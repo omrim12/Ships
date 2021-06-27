@@ -1,10 +1,10 @@
 #include "View.h"
-#include "Boat.h"
 #include <memory>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <iostream>
+#include "../Model/Boat.h"
 #include "../Model/Location.h"
 using namespace std;
 /***********************************/
@@ -46,7 +46,7 @@ void View::show()	{
 
 	for(int i = 0; i < map_size; i++)	{
 
-		line_display = int(axis_base.y + ((map_size - 1) * scale) - 3 * count * scale);
+		line_display = int(axis_base.get_y() + ((map_size - 1) * scale) - 3 * count * scale);
 		curr_disp_len = num_length(line_display);
 
 		if( !(i % 3) )	{ // record line display every third line
