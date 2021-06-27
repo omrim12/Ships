@@ -49,11 +49,6 @@ struct unload_Port {
 };
 
 /*****************************************/
-enum dest_type {
-    load, unload, None
-};
-
-/*****************************************/
 class freighterBoat;
 
 class cruiserBoat;
@@ -74,16 +69,9 @@ protected:
     Location curr_Location;
     Location dest_Location;
     std::weak_ptr<Port> dest_port;
-    dest_type type;
-    int curr_num_of_containers;
     bool available;
-    bool waiting_in_fuel_queue;
-    bool ask_fuel;
 
     queue<Order> orders_queue;
-
-    vector<weak_ptr<Port>> ports_to_load;
-    vector<unload_Port> ports_to_unload;
 
 
 public:
@@ -97,11 +85,7 @@ public:
 																	curr_Location(Location()),
 																	dest_Location(Location()),
 																	dest_port(weak_ptr<Port>()),
-																	type(None),
-																	curr_num_of_containers(0),
-																	available(true),
-																	waiting_in_fuel_queue(false),
-																	ask_fuel(false) {};
+																	available(true){};
 
     virtual ~Boat() {};
 
@@ -117,8 +101,6 @@ public:
 
     string getName() const;
 
-    void setNumOfContainers(int n);
-
     void setAvailable(bool b);
 
     void addFuel(int cap);
@@ -129,15 +111,7 @@ public:
 
     void addOrder(const string &ord_str, int deg = 0, double speed = 0, double x = 0, double y = 0,
              weak_ptr<Port> port = weak_ptr<Port>(), weak_ptr<Boat> boat = weak_ptr<Boat>(),
-             int cont_capacity = 0);
-
-    virtual bool dest_is_load(weak_ptr<Port> dest);
-
-    virtual bool dest_is_unload(weak_ptr<Port> dest);
-
-    virtual void add_load_dest(weak_ptr<Port> load_port);
-
-    virtual void add_unload_dest(weak_ptr<Port> unload_port, int capacity);
+             int containers_capacityacity = 0);
 
     virtual Boat &operator++();
 
@@ -163,6 +137,9 @@ public:
     virtual void in_move_status() = 0;
 
     virtual void patrol_move_to_first() =0;
+
+    virtual void add_load_dest(weak_ptr<Port> load_port);
+    virtual void add_unload_dest(weak_ptr<Port> unload_port, int capacity);
 
     virtual bool operator>(const Boat &other) const;
 

@@ -14,8 +14,7 @@ using namespace std;
 //3.	run tests for all class functions.
 
 // -----MODEL-----
-//1.	finish port class (including operator == )
-//2.	implement create at Model.cpp
+//2.	implement create at Model.cpp --> ???
 //3.	move through _todo's to see if any assignements left behind
 
 // -----VIEW-----

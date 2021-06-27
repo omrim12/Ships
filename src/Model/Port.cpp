@@ -3,21 +3,18 @@
 #include "freighterBoat.h"
 /********************************************/
 Port::Port(): gameObj(), loc(Location(50,5)), containers(0),port_name("Nagoya"),fuel_capacity(1000000),
-              fuel_product_per_hr(1000),ready_to_fuel(deque<weak_ptr<Boat> >{}),
-              new_containers(containers),new_fuel_capacity(fuel_capacity){} // for default port Nagoya.
+              fuel_product_per_hr(1000),ready_to_fuel(deque<weak_ptr<Boat> >{}){} // for default port Nagoya.
 /********************************************/
 Port::Port(Port&& other):gameObj(),loc(other.loc), containers(other.containers),port_name(other.port_name),fuel_capacity(other.fuel_capacity),
-                         fuel_product_per_hr(other.fuel_product_per_hr), ready_to_fuel(other.ready_to_fuel), new_containers(other.new_containers),
-                         new_fuel_capacity(other.new_fuel_capacity)	{}
+                         fuel_product_per_hr(other.fuel_product_per_hr), ready_to_fuel(other.ready_to_fuel)
+                        {}
 /********************************************/
 Port::Port(const Port& other):gameObj(),loc(other.loc), containers(other.containers),port_name(other.port_name),fuel_capacity(other.fuel_capacity),
-                              fuel_product_per_hr(other.fuel_product_per_hr), ready_to_fuel(other.ready_to_fuel), new_containers(other.new_containers),
-                              new_fuel_capacity(other.new_fuel_capacity)	{}
+                              fuel_product_per_hr(other.fuel_product_per_hr), ready_to_fuel(other.ready_to_fuel){}
 /********************************************/
 Port::Port(double fuel_capacity, double fuel_product, string& name, const Location& loc):
         gameObj(),loc(Location()),containers(0),port_name(name),fuel_capacity(fuel_capacity),
-        fuel_product_per_hr(fuel_product),ready_to_fuel(deque<weak_ptr<Boat> >{}),new_containers(containers),
-        new_fuel_capacity(fuel_capacity){}
+        fuel_product_per_hr(fuel_product),ready_to_fuel(deque<weak_ptr<Boat> >{}){}
 /********************************************/
 Port::~Port()	{}
 /********************************************/
@@ -102,14 +99,7 @@ void Port::removeFromQueue(weak_ptr<Boat> boat){
 void Port::update()	{
 
     fuel();
-    /*
-     *
-     * to update :
-     *
-     *
-     * 3. product more fuel
-     *
-     */
+    fuel_capacity += fuel_product_per_hr;
 
 }
 /********************************************/

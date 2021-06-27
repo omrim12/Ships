@@ -1,9 +1,56 @@
 #include "freighterBoat.h"
 #include "Direction.h"
 #include<bits/stdc++.h>
-freighterBoat::freighterBoat(string &boat_name, int cont_cap, int res) : Boat(boat_name, MAX_FRI_FUEL, res, cont_cap),
-                                                                         MAX_CONTAINERS_CAPACITY(cont_cap) {};
+
+freighterBoat::freighterBoat(string &boat_name, int containers_capacity, int res) : Boat(boat_name, MAX_FRI_FUEL, res,
+                                                                                         containers_capacity),
+                                                                                    MAX_CONTAINERS_CAPACITY(
+                                                                                            containers_capacity),
+                                                                                    curr_num_of_containers(0),
+                                                                                    waiting_in_fuel_queue(false),
+                                                                                    ask_fuel(false),type(None) {};
+
 /*************************************/
+void freighterBoat::setNumOfContainers(int n) { curr_num_of_containers = n; }
+
+/********************************/
+bool freighterBoat::dest_is_load(weak_ptr<Port> dest) {
+    for (auto &p: ports_to_load) {
+        if (p.lock().get() == dest.lock().get()) { ///???operator ==
+            return true;
+        }
+    }
+    return false;
+}
+
+/********************************/
+bool freighterBoat::dest_is_unload(weak_ptr<Port> dest) {
+    for (auto &p: ports_to_unload) {
+        if (p.port.lock().get() == dest.lock().get()) { ///???operator ==
+            return true;
+        }
+    }
+    return false;
+}
+
+/********************************/
+void freighterBoat::add_load_dest(weak_ptr<Port> load_port) {
+    if (dest_is_load(load_port))return;  //there is nothing to do
+    else if (dest_is_unload(load_port)) cerr << "Destination is already for unload." << endl;
+    else ports_to_load.push_back(load_port);
+}
+
+/********************************/
+void freighterBoat::add_unload_dest(weak_ptr<Port> unload_port, int capacity) {
+    if (dest_is_unload(unload_port))return;  //there is nothing to do
+    else if (dest_is_load(unload_port)) cerr << "Destination is already for load." << endl;
+    else {
+        unload_Port new_port(unload_port, capacity);
+        ports_to_unload.push_back(new_port);
+    }
+}
+
+/********************************/
 void freighterBoat::course(double deg, double speed) {
     status = Move_to_Course;
     direction = Direction(deg);
@@ -15,7 +62,7 @@ void freighterBoat::course(double deg, double speed) {
 /*************************************/
 void freighterBoat::position(double x, double y, double speed) {
     status = Move_to_Position;
-    direction = Direction(Location(x, y),curr_Location);
+    direction = Direction(Location(x, y), curr_Location);
     curr_speed = speed;
     dest_port.reset();
     type = None;
@@ -27,7 +74,7 @@ void freighterBoat::destination(weak_ptr<Port> port, double speed) {
     else if (dest_is_unload(port)) type = unload;
     else type = None;
     status = Move_to_Dest;
-    direction = Direction(port.lock()->get_Location(),curr_Location);
+    direction = Direction(port.lock()->get_Location(), curr_Location);
     dest_port = std::move(port);
     curr_speed = speed;
 }
@@ -119,11 +166,11 @@ void freighterBoat::in_dock_status() {
 
 /*************************************/
 void freighterBoat::in_move_status() {
-    if (curr_Location.distance_from(dest_Location) <= 0.1){
+    if (curr_Location.distance_from(dest_Location) <= 0.1) {
         //case of boat already can dock at destination
-        status=Docked;
-        curr_speed=0;
-        curr_Location=dest_Location;
+        status = Docked;
+        curr_speed = 0;
+        curr_Location = dest_Location;
         return;
     }
     Location next_Location = curr_Location.next_Location(direction, curr_speed);
@@ -132,7 +179,7 @@ void freighterBoat::in_move_status() {
     if (curr_fuel - use_fuel < 0) {
         if (curr_Location != dest_Location) {
             status = Dead;
-            curr_speed=0;
+            curr_speed = 0;
         }
     } else {
         curr_fuel -= use_fuel;

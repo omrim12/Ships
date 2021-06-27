@@ -44,7 +44,7 @@ void cruiserBoat::attack(weak_ptr<Boat> attack_boat) {
             //*decrement cruiser boat power attack
             this--;
 
-        } else if (typeid(*attack_boat).name() == typeid(patrolBoat()).name()) {
+        } else if (typeid(*attack_boat) == typeid(patrolBoat())) {
             //Case of patrol boat:
             //*increment patrol res_pow
             //*decrement cruiser attack power

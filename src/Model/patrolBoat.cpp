@@ -48,7 +48,8 @@ void patrolBoat::start_patrol(weak_ptr<Port> port, double speed) {
 
     std::sort(curr_patrol.begin(), curr_patrol.end(), cmp(*port.lock()));
     cursor = 0;
-    dest_Location = curr_patrol[cursor + 1].lock()->get_Location();
+    dest_port = curr_patrol[cursor+1];
+    dest_Location = dest_port.lock()->get_Location();
     status = Move_to_Dest;
     curr_speed = speed;
     patrol_speed = speed;
@@ -80,13 +81,15 @@ void patrolBoat::in_dock_status() {
                 //curr location is the last destination in curr patrol
                 //return to first destination
                 cursor = 0;
-                dest_Location = curr_patrol[cursor].lock()->get_Location();
+                dest_port = curr_patrol[cursor];
+                dest_Location = dest_port.lock()->get_Location();
                 status = Move_to_first;
                 curr_speed = patrol_speed;
                 return;
             } else {
                 cursor++;
-                dest_Location = *curr_patrol[cursor].lock();
+                dest_port = curr_patrol[cursor];
+                dest_Location = dest_port.lock()->get_Location();
                 status = Move_to_Dest;
                 curr_speed = patrol_speed;
             }

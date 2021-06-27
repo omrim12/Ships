@@ -69,7 +69,7 @@ void Terminal::run()	{
 				}
 				else if( second_word == "position" )	{
 					s >> x >> y >> speed;
-					///add order to queue
+					//add order to queue
 					b.lock()->addOrder(second_word,speed,x,y);
 					continue;
 				}

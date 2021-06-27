@@ -4,8 +4,6 @@ Location Boat::getCurrLocation(){return curr_Location;}
 /********************************/
 string Boat::getName() const	{ return name; }
 /********************************/
-void Boat::setNumOfContainers(int n){ curr_num_of_containers=n;}
-/********************************/
 void Boat::setAvailable(bool b) { available = b; }
 /********************************/
 void Boat::setWaiting(bool b) { waiting_in_fuel_queue = b; }
@@ -15,7 +13,7 @@ void Boat::setAskForFuel(bool b) { ask_fuel = b; }
 void Boat::addFuel(int cap) { curr_fuel += cap; }
 /********************************/
 void Boat::addOrder(const string &ord_str, int deg, double speed, double x, double y, weak_ptr<Port> port, weak_ptr<Boat> boat,
-         int cont_capacity) {
+         int containers_capacityacity) {
     order curr_ord;
     if (ord_str == "course") curr_ord = Course;
     else if (ord_str == "position") curr_ord = Position;
@@ -24,42 +22,11 @@ void Boat::addOrder(const string &ord_str, int deg, double speed, double x, doub
     else if (ord_str == "attack") curr_ord = Attack;
     else curr_ord = Stop;
 
-    Order new_order = Order(curr_ord, deg, speed, port, boat, x, y, cont_capacity);
+    Order new_order = Order(curr_ord, deg, speed, port, boat, x, y, containers_capacityacity);
     orders_queue.push(new_order);   //adding order to queue
 }
 /********************************/
-bool Boat::dest_is_load(weak_ptr<Port> dest) {
-    for (auto &p: ports_to_load) {
-        if (p.lock().get() == dest.lock().get()) { ///???operator ==
-            return true;
-        }
-    }
-    return false;
-}
-/********************************/
-bool Boat::dest_is_unload(weak_ptr<Port> dest) {
-    for (auto &p: ports_to_unload) {
-        if (p.port.lock().get() == dest.lock().get()) { ///???operator ==
-            return true;
-        }
-    }
-    return false;
-}
-/********************************/
-void Boat::add_load_dest(weak_ptr<Port> load_port) {
-    if (dest_is_load(load_port))return;  //there is nothing to do
-    else if (dest_is_unload(load_port)) cerr << "Destination is already for unload." << endl;
-    else ports_to_load.push_back(load_port);
-}
-/********************************/
-void Boat::add_unload_dest(weak_ptr<Port> unload_port, int capacity) {
-    if (dest_is_unload(unload_port))return;  //there is nothing to do
-    else if (dest_is_load(unload_port)) cerr << "Destination is already for load." << endl;
-    else {
-        unload_Port new_port(unload_port, capacity);
-        ports_to_unload.push_back(new_port);
-    }
-}
+
 /********************************/
 Boat& Boat::operator++() {
     res_pow++;
