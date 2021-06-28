@@ -10,10 +10,6 @@ double Boat::getMaxFuel() const	{ return MAX_BOAT_FUEL; }
 /********************************/
 void Boat::setAvailable(bool b) { available = b; }
 /********************************/
-void Boat::setWaiting(bool b) { waiting_in_fuel_queue = b; } // NO SUCH FIELD ?
-/********************************/
-void Boat::setAskForFuel(bool b) { ask_fuel = b; } // NO SUCH FIELD ?
-/********************************/
 void Boat::addFuel(int cap) { curr_fuel += cap; }
 /********************************/
 void Boat::addOrder(const string &ord_str, int deg, double speed, double x, double y, weak_ptr<Port> port, weak_ptr<Boat> boat,

@@ -2,7 +2,7 @@
 #include "Direction.h"
 #include<bits/stdc++.h>
 
-freighterBoat::freighterBoat(string &boat_name, int containers_capacity, int res) : Boat(boat_name, MAX_FRI_FUEL, res,
+freighterBoat::freighterBoat(string boat_name, int containers_capacity, int res) : Boat(boat_name, MAX_FRI_FUEL, res,
                                                                                          containers_capacity),
                                                                                     MAX_CONTAINERS_CAPACITY(
                                                                                             containers_capacity),
@@ -16,7 +16,7 @@ void freighterBoat::setNumOfContainers(int n) { curr_num_of_containers = n; }
 /********************************/
 bool freighterBoat::dest_is_load(weak_ptr<Port> dest) {
     for (auto &p: ports_to_load) {
-        if (p.lock().get() == dest.lock().get()) { ///???operator ==
+        if (*p.lock().get() == *dest.lock().get()) {
             return true;
         }
     }
@@ -26,7 +26,7 @@ bool freighterBoat::dest_is_load(weak_ptr<Port> dest) {
 /********************************/
 bool freighterBoat::dest_is_unload(weak_ptr<Port> dest) {
     for (auto &p: ports_to_unload) {
-        if (p.port.lock().get() == dest.lock().get()) { ///???operator ==
+        if (*(p.port.lock().get()) == *(dest.lock().get())) {
             return true;
         }
     }
@@ -188,6 +188,12 @@ void freighterBoat::in_move_status() {
 }
 
 /*************************************/
+void freighterBoat::setWaiting(bool b) { waiting_in_fuel_queue = b; }
+/********************************/
+void freighterBoat::setAskForFuel(bool b) { ask_fuel = b; }
+/*************************************/
+int freighterBoat::getMAXSpeed(){return MAX_SPEED;}
+/*************************************/
 ostream &operator<<(ostream &out, const freighterBoat &ship) {
 
     string stat_string = "";
@@ -195,8 +201,8 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
     switch (ship.status) {
         case (Move_to_Dest):
             stat_string +=
-                    "Moving to " + ship.dest_port.lock()->getPortName() + " on course " + ship.direction.get_degree() +
-                    " deg" + ", speed " + ship.curr_speed + " nm/hr " + " Containers: " + ship.curr_num_of_containers;
+                    "Moving to " + ship.dest_port.lock()->getPortName() + " on course " + to_string(ship.direction.get_degree()) +
+                    " deg" + ", speed " + to_string(ship.curr_speed) + " nm/hr " + " Containers: " + to_string(ship.curr_num_of_containers);
             switch (ship.type) {
                 case (load):
                     stat_string += "moving to loading destination. ";
@@ -210,13 +216,13 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
             }
             break;
         case (Move_to_Position):
-            stat_string += "Moving to position " + ship.dest_Location + ", speed " + ship.curr_speed + " nm/hr " +
-                           " Containers: " + ship.curr_num_of_containers;
+            stat_string += "Moving to position " + string(ship.dest_Location) + ", speed " + to_string(ship.curr_speed) + " nm/hr " +
+                           " Containers: " + to_string(ship.curr_num_of_containers);
             break;
         case (Move_to_Course):
             stat_string +=
-                    "Moving on course " + ship.direction.get_degree() + ", speed " + ship.curr_speed + " nm/hr " +
-                    " Containers: " + ship.curr_num_of_containers;
+                    "Moving on course " + to_string(ship.direction.get_degree()) + ", speed " + to_string(ship.curr_speed) + " nm/hr " +
+                    " Containers: " + to_string(ship.curr_num_of_containers);
             break;
         case (Docked):
             stat_string += "Docked at " + ship.dest_port.lock()->getPortName();

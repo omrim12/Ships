@@ -8,10 +8,10 @@
 #include "Boat.h"
 #include "Location.h"
 
-/**************************/
+/**********/
 class Boat;
 class patrolBoat;
-/**************************/
+/**********/
 class Port : public gameObj	{
 
 private:
@@ -34,6 +34,7 @@ public:
     /*operators*/
     Port& operator=(Port&&);
     Port& operator=(const Port&);
+    bool operator==(const Port &p);
 
     /*setters & getters*/
     string getPortName() const;
@@ -50,5 +51,5 @@ public:
     void unload_port(int cap);
     virtual void update();
 };
-/**************************/
+/**********/
 #endif

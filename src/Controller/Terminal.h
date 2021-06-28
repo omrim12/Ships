@@ -14,7 +14,6 @@ public:
         	virtual const char *what() const noexcept	{return string("ERROR: invalid input : " + msg).c_str();}
     };
 
-
     /*c'tors & d'tors*/
     Terminal() {Time = 0;}
     ~Terminal()	{}

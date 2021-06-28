@@ -21,14 +21,14 @@ void cruiserBoat::attack(weak_ptr<Boat> attack_boat) {
         attack_boat.lock()->stop();
         if (*this > *attack_boat.lock()) {
             //Attack Succeeded
-            if (typeid(*attack_boat.lock()) == typeid(freighterBoat())) {
+            if (typeid(*attack_boat.lock().get()) == typeid(freighterBoat())) {
                 //Case of freighter boat:
                 //*attack boat will lose all containers she had
                 //*increment cruiser attack power
                 dynamic_cast<freighterBoat*>(attack_boat.lock().get())->setNumOfContainers(0);
                 ++(*this);
 
-            } else if (typeid(*attack_boat.lock()) == typeid(patrolBoat())) {
+            } else if (typeid(*attack_boat.lock().get()) == typeid(patrolBoat())) {
                 //Case of patrol boat:
                 //*decrement patrol res_pow
                 //*increment cruiser attack power
@@ -39,16 +39,16 @@ void cruiserBoat::attack(weak_ptr<Boat> attack_boat) {
         }
     } else {
         //Attack Failed
-        if (typeid(*attack_boat.lock()) == typeid(freighterBoat())) {
+        if (typeid(*attack_boat.lock().get()) == typeid(freighterBoat())) {
             //Case of freighter boat:
             //*decrement cruiser boat power attack
         	--(*this);
 
-        } else if (typeid(*attack_boat.lock()) == typeid(patrolBoat())) {
+        } else if (typeid(*attack_boat.lock().get()) == typeid(patrolBoat())) {
             //Case of patrol boat:
             //*increment patrol res_pow
             //*decrement cruiser attack power
-        	++(*attack_boat);
+        	++(*attack_boat.lock().get());
         	--(*this);
 
         }
@@ -82,3 +82,9 @@ void cruiserBoat::refuel()	{}
 /********************************/
 void cruiserBoat::stop()	{}
 /********************************/
+void cruiserBoat::setAskForFuel(bool)	{}
+/********************************/
+void cruiserBoat::setWaiting(bool)	{}
+/********************************/
+int cruiserBoat::getMAXSpeed()	{return MAX_SPEED;}
+

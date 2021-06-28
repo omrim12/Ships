@@ -23,7 +23,7 @@ FileParser::FileParser(const char * filename)	{
 		stringstream sub_parser;
 
 		// initially add port Nagoya by default (default c'tor generates this port).
-		Model::getInstance().get()->getAllPorts().push_back(make_shared<Port>(new Port()));
+		Model::getInstance().get()->getAllPorts().push_back(shared_ptr<Port>(new Port()));
 
 		while( getline(ports_file,line_buffer) )	{
 
@@ -55,7 +55,7 @@ FileParser::FileParser(const char * filename)	{
 			if( fuel_generate_per_hr < 0 )	{ throw InvalidContentException(line); }
 
 			// initialize a new port by given arguments and add it to model's database.
-			Model::getInstance().get()->getAllPorts().push_back(make_shared<Port>(new Port(fuel_start_cap, fuel_generate_per_hr, port_name, port_loc)));
+			Model::getInstance().get()->getAllPorts().push_back(shared_ptr<Port>(new Port(fuel_start_cap, fuel_generate_per_hr, port_name, port_loc)));
 
 			++line;
 	}

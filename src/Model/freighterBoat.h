@@ -53,6 +53,12 @@ public:
 
     void attack(weak_ptr<Boat>);
 
+    void setWaiting(bool b);
+
+    void setAskForFuel(bool b);
+
+    int getMAXSpeed();
+
     bool dest_is_load(weak_ptr<Port> dest);
 
     bool dest_is_unload(weak_ptr<Port> dest);
