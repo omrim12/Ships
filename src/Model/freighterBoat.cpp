@@ -237,7 +237,6 @@ ostream &operator<<(ostream &out, const freighterBoat &ship) {
             break;
 
         default:
-            cerr << "WTFFFFF" << endl;
             break;
     }
 
